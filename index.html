@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Car Should I Buy?</title>
+<meta name="description" content="A data-driven car buying shortlist with a weighted scoring model.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div>
+      <h1 id="site-title">Which Car Should I Buy?</h1>
+      <p class="subtitle" id="site-subtitle"></p>
+    </div>
+    <button id="theme-toggle" class="icon-btn" type="button" title="Toggle theme" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="verdict-panel" aria-live="polite">
+    <h2 class="panel-title">Current verdict</h2>
+    <div id="verdict" class="verdict"></div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Priorities</h2>
+          <button id="reset-weights" class="link-btn" type="button">Reset</button>
+        </div>
+        <p class="muted small">Drag to say how much each factor matters. 0 = ignore it.</p>
+        <div id="weights"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Filters</h2>
+          <button id="reset-filters" class="link-btn" type="button">Clear</button>
+        </div>
+        <label class="field">
+          <span>Search</span>
+          <input type="search" id="search" placeholder="Make, model, note…">
+        </label>
+        <label class="field">
+          <span>Max price: <b id="budget-value"></b></span>
+          <input type="range" id="budget" min="0" max="100000" step="500">
+        </label>
+        <div class="field">
+          <span>Body</span>
+          <div id="filter-body" class="chips"></div>
+        </div>
+        <div class="field">
+          <span>Fuel</span>
+          <div id="filter-fuel" class="chips"></div>
+        </div>
+        <div class="field">
+          <span>Status</span>
+          <div id="filter-status" class="chips"></div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="content">
+      <div class="toolbar">
+        <p class="muted small" id="result-count"></p>
+        <label class="inline-field">
+          <span class="muted small">Sort</span>
+          <select id="sort">
+            <option value="score">Best score</option>
+            <option value="price">Lowest price</option>
+            <option value="running">Lowest running cost</option>
+            <option value="reliability">Most reliable</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="table-scroll panel no-pad">
+        <table id="cars-table">
+          <thead id="cars-head"></thead>
+          <tbody id="cars-body"></tbody>
+        </table>
+      </div>
+
+      <p class="muted small footnote">
+        Scores are normalised 0–100 across the cars currently shown, then combined with your weights.
+        Change the weights and the ranking changes — that is the point.
+      </p>
+    </section>
+  </div>
+</main>
+
+<dialog id="car-dialog" class="car-dialog">
+  <div id="car-dialog-content"></div>
+  <form method="dialog" class="dialog-actions"><button class="btn">Close</button></form>
+</dialog>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="muted small">Data last updated <span id="updated"></span> · Edit <code>data/cars.json</code> to change the shortlist.</span>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
