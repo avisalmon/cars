@@ -1,0 +1,98 @@
+{
+  "toyota-corolla-cross-hybrid": {
+    "src": "images/toyota-corolla-cross-hybrid.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Toyota_Corolla_Cross_Hybrid_1X7A6284.jpg",
+    "caption": "Toyota Corolla Cross Hybrid 1X7A6284"
+  },
+  "kia-sportage-hybrid": {
+    "src": "images/kia-sportage-hybrid.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kia_Sportage_(NQ5)_1X7A0319.jpg",
+    "caption": "Kia Sportage (NQ5) 1X7A0319"
+  },
+  "kia-niro-hybrid": {
+    "src": "images/kia-niro-hybrid.jpg",
+    "credit": "Elise240SX",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2023_Kia_Niro_Hybrid_EX_in_Runway_Red,_Front_Right,_10-09-2023.jpg",
+    "caption": "2023 Kia Niro Hybrid EX in Runway Red, Front Right, 10-09-2023"
+  },
+  "toyota-rav4-hybrid": {
+    "src": "images/toyota-rav4-hybrid.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2019_Toyota_RAV4_Hybrid_01.jpg",
+    "caption": "2019 Toyota RAV4 Hybrid 01"
+  },
+  "hyundai-tucson-phev": {
+    "src": "images/hyundai-tucson-phev.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hyundai_Tucson_(NX4)_PHEV_IMG_4375.jpg",
+    "caption": "Hyundai Tucson (NX4) PHEV IMG 4375"
+  },
+  "hyundai-elantra-hybrid": {
+    "src": "images/hyundai-elantra-hybrid.jpg",
+    "credit": "Captainmorlypogi1959",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hyundai_Elantra_1.6_GLS_HEV_Hybrid_2025.jpg",
+    "caption": "Hyundai Elantra 1.6 GLS HEV Hybrid 2025"
+  },
+  "toyota-camry-hybrid": {
+    "src": "images/toyota-camry-hybrid.jpg",
+    "credit": "Damian B Oh",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Toyota_Camry_Hybrid_XLE_XV80_Platinum_White_Pearl_Mica_(2).jpg",
+    "caption": "Toyota Camry Hybrid"
+  },
+  "renault-symbioz-etech": {
+    "src": "images/renault-symbioz-etech.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Renault_Symbioz_Concept_(2017),_Paris_Motor_Show_2018,_IMG_0477.jpg",
+    "caption": "Renault Symbioz E-Tech"
+  },
+  "renault-arkana-etech": {
+    "src": "images/renault-arkana-etech.jpg",
+    "credit": "Tokumeigakarinoaoshima",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Osaka_Auto_Messe_2022_(545)_-_Renault_ARKANA_R.S._LINE_E-TECH_HYBRID_(7AA-LJLH4MH).jpg",
+    "caption": "Renault Arkana E-Tech"
+  },
+  "kia-sorento-hybrid": {
+    "src": "images/kia-sorento-hybrid.jpg",
+    "credit": "Benespit",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2024_Kia_Sorento_(MQ4)_Hybrid_1_cropped.jpg",
+    "caption": "Kia Sorento Hybrid"
+  },
+  "hyundai-santa-fe-hybrid": {
+    "src": "images/hyundai-santa-fe-hybrid.jpg",
+    "credit": "Alexander Migl",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2024_Hyundai_Santa_Fe_(MX5)_IMG_5295.jpg",
+    "caption": "Hyundai Santa Fe Hybrid"
+  },
+  "mazda-cx-90-mhev": {
+    "src": "images/mazda-cx-90-mhev.jpg",
+    "credit": "Ethan Llamas",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2024_Mazda_CX-90_3.3_e-Skyactiv-G_AWD_HEV_Turbo_Exclusive_in_Artisan_Red_Premium,_06-15-2024.jpg",
+    "caption": "Mazda CX-90 MHEV"
+  }
+}

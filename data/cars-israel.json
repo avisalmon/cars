@@ -1,0 +1,1171 @@
+{
+  "meta": {
+    "title": "New Family Car in Israel — Hybrid & PHEV Shortlist",
+    "subtitle": "October 2026 market. New cars only; full EVs and Chinese brands excluded.",
+    "currency": "₪",
+    "updated": "2026-10-08",
+    "source": "New Family Cars in Israel: Hybrid, Plug-in Hybrid, and Other Non-EV Options",
+    "horizonYears": 5,
+    "assumptions": {
+      "kmPerYear": 15000,
+      "petrolPrice": 7.77,
+      "electricityPrice": 0.6352,
+      "phevEvShare": 0.7,
+      "applyDiscount": false
+    },
+    "assumptionNotes": {
+      "petrolPrice": "Government-set maximum self-service price for 95-octane, effective 5 Oct 2026 (₪7.77/L).",
+      "electricityPrice": "Uniform residential tariff incl. VAT, effective 1 Jul 2026 (≈₪0.6352/kWh).",
+      "phevEvShare": "Share of distance driven electrically on home charging. The Tucson PHEV case collapses if this is low.",
+      "kmPerYear": "Baseline family usage: 15,000 km/year, 75,000 km over five years."
+    },
+    "verdict": {
+      "headline": "Toyota Corolla Cross Hybrid",
+      "text": "Best risk-adjusted package: lowest modeled five-year cost of any SUV here, a mature non-turbo hybrid, and the strongest likely residual. The Sportage is the better buy when physical space matters more; the Niro maximises efficiency per shekel.",
+      "hierarchy": [
+        "Do you genuinely need a third row?",
+        "Is home charging guaranteed?",
+        "Compare insurance quotes — before comparing discounts.",
+        "Only then negotiate purchase price."
+      ]
+    }
+  },
+  "criteria": [
+    {
+      "key": "tco5",
+      "label": "5-yr cost",
+      "short": "5-yr TCO",
+      "format": "currency",
+      "direction": "lower",
+      "defaultWeight": 9,
+      "hint": "Depreciation + fees + insurance + energy + maintenance. Excludes purchase price itself (that would double-count) and financing interest."
+    },
+    {
+      "key": "acquisition",
+      "label": "Cash price",
+      "short": "Price",
+      "format": "currency",
+      "direction": "lower",
+      "defaultWeight": 8,
+      "hint": "MSRP plus first-registration fee — the cash needed to acquire the car."
+    },
+    {
+      "key": "reliability",
+      "label": "Reliability",
+      "short": "Rely.",
+      "format": "score",
+      "direction": "higher",
+      "defaultWeight": 9,
+      "hint": "Analyst outlook 1-10 based on powertrain maturity and local track record. Not an owner-survey score — Israeli owner data is fragmented."
+    },
+    {
+      "key": "safety",
+      "label": "Safety",
+      "short": "Safety",
+      "format": "score",
+      "direction": "higher",
+      "defaultWeight": 8,
+      "hint": "Analyst score 1-10 weighting Euro NCAP result AND test-protocol recency. An old 5-star is not a new 5-star."
+    },
+    {
+      "key": "consumption",
+      "label": "Consumption",
+      "short": "L/100km",
+      "format": "l100",
+      "direction": "lower",
+      "defaultWeight": 6,
+      "hint": "Official or locally quoted L/100 km. Undefined for the PHEV, where consumption depends entirely on charging habit."
+    },
+    {
+      "key": "cargo",
+      "label": "Cargo",
+      "short": "Cargo",
+      "format": "litres",
+      "direction": "higher",
+      "defaultWeight": 5,
+      "hint": "Boot volume with all fitted seats in use. For three-row cars this is the all-rows-up figure — see the folded figure in the detail view."
+    },
+    {
+      "key": "energy5",
+      "label": "5-yr energy",
+      "short": "Energy",
+      "format": "currency",
+      "direction": "lower",
+      "defaultWeight": 5,
+      "hint": "Petrol and/or electricity over five years, recomputed live from your assumptions."
+    },
+    {
+      "key": "residual",
+      "label": "5-yr residual",
+      "short": "Residual",
+      "format": "percent",
+      "direction": "higher",
+      "defaultWeight": 5,
+      "hint": "Modeled share of list price retained after five years. This is the single largest uncertainty in the whole comparison."
+    },
+    {
+      "key": "seats",
+      "label": "Seats",
+      "short": "Seats",
+      "format": "plain",
+      "direction": "higher",
+      "defaultWeight": 2,
+      "hint": "Set this to 0 unless you actually carry more than five people."
+    },
+    {
+      "key": "power",
+      "label": "Power",
+      "short": "hp",
+      "format": "hp",
+      "direction": "higher",
+      "defaultWeight": 2,
+      "hint": "Combined system output where the importer publishes it."
+    }
+  ],
+  "cars": [
+    {
+      "id": "toyota-corolla-cross-hybrid",
+      "make": "Toyota",
+      "model": "Corolla Cross Hybrid",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "top-pick",
+      "msrp": 179990,
+      "registration": 2450,
+      "discountTarget": [
+        0,
+        5000
+      ],
+      "residual": 0.6,
+      "fees5": 12300,
+      "insurance5": 37500,
+      "maint5": 7000,
+      "fuel": {
+        "l100": 5.75
+      },
+      "consumption": 5.0,
+      "consumptionBasis": "WLTP",
+      "cargo": 436,
+      "seats": 5,
+      "power": 140,
+      "reliability": 9.0,
+      "safety": 9.0,
+      "safetyBasis": "5-star Euro NCAP, 2022 protocol",
+      "estimates": [
+        "cargo"
+      ],
+      "drivetrain": "1.8 L hybrid, e-CVT",
+      "trims": "Full trim breakdown not exposed on the current Toyota Israel page; quoted from ₪179,990.",
+      "pros": [
+        "Lowest modeled five-year cost of any SUV here",
+        "Mature, non-turbo Toyota hybrid architecture",
+        "Strong expected resale (~60%)",
+        "No plug, no charging logistics",
+        "Mainstream service footprint"
+      ],
+      "cons": [
+        "Not the roomiest — visibly tighter than Sportage or RAV4",
+        "Less power and refinement than larger hybrids",
+        "Road and cabin noise worth checking",
+        "Trim/equipment content must be verified on the order form"
+      ],
+      "bestFor": "A family of three to five wanting the least-regret, low-complexity purchase.",
+      "notes": "Ranks first not by winning any single dimension — it doesn't — but by having almost no costly compromise. Watchpoints for the test drive: rear-seat width for three child seats, and whether the boot swallows your stroller plus holiday luggage.",
+      "warranty": "Toyota Relax + dedicated hybrid-battery program verified; exact basic term unspecified in the retrieved source — get it in writing against the VIN.",
+      "link": "https://www.toyota.co.il/new-cars/corolla-cross"
+    },
+    {
+      "id": "kia-sportage-hybrid",
+      "make": "Kia",
+      "model": "Sportage Hybrid",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "shortlist",
+      "msrp": 178900,
+      "registration": 2450,
+      "discountTarget": [
+        4000,
+        10000
+      ],
+      "residual": 0.53,
+      "fees5": 12300,
+      "insurance5": 42500,
+      "maint5": 8500,
+      "fuel": {
+        "l100": 6.55
+      },
+      "consumption": 5.7,
+      "consumptionBasis": "5.6–5.8 L/100 km quoted locally",
+      "cargo": 560,
+      "seats": 5,
+      "power": 230,
+      "reliability": 7.0,
+      "safety": 9.0,
+      "safetyBasis": "5-star Euro NCAP, 2022 protocol",
+      "estimates": [
+        "cargo",
+        "consumption"
+      ],
+      "drivetrain": "1.6 L turbo hybrid, 6-speed automatic",
+      "trims": "Hybrid from ₪178,900; Hybrid Long from ₪189,900 (Kia Israel family guide, Aug 2026).",
+      "pros": [
+        "Near-Corolla-Cross pricing for a much larger-feeling SUV",
+        "230 hp — genuinely strong performance",
+        "5-star Euro NCAP on the current protocol",
+        "Regular and Long body variants"
+      ],
+      "cons": [
+        "Highest energy bill of the compact hybrids",
+        "Turbo engine plus hybrid hardware = more complexity",
+        "Higher insurance exposure — quote it before signing",
+        "Exact Israeli boot figure not published in the retrieved source"
+      ],
+      "bestFor": "Parents with bulky strollers, sports equipment or teenagers who don't yet need a third row.",
+      "notes": "Ranks second overall despite a slightly higher modeled cost, because space and equipment are real family benefits that the TCO number alone doesn't capture.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://kia-israel.co.il/catalog/mifrat-sportage-hybrid.pdf"
+    },
+    {
+      "id": "kia-niro-hybrid",
+      "make": "Kia",
+      "model": "Niro Hybrid",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "shortlist",
+      "msrp": 176900,
+      "registration": 2450,
+      "discountTarget": [
+        3000,
+        8000
+      ],
+      "residual": 0.52,
+      "fees5": 12300,
+      "insurance5": 39000,
+      "maint5": 7500,
+      "fuel": {
+        "l100": 5.3
+      },
+      "consumption": 4.6,
+      "consumptionBasis": "4.6 EX / 5.1 Premium, Kia Israel",
+      "cargo": 451,
+      "seats": 5,
+      "power": null,
+      "reliability": 7.5,
+      "safety": 8.5,
+      "safetyBasis": "Euro NCAP 2022 — star result depends on fitted safety pack; Israeli cars carry extensive active-safety kit",
+      "estimates": [],
+      "drivetrain": "1.6 L GDI full hybrid, 6-speed DCT",
+      "trims": "EX ₪176,900; Premium ₪179,900 (+ ₪2,450 registration).",
+      "pros": [
+        "Best efficiency in the shortlist",
+        "Very little money wasted on size you don't use",
+        "Eight airbags; blind-spot and rear cross-traffic intervention",
+        "Compact outside, usable hatchback packaging"
+      ],
+      "cons": [
+        "Smaller rear cabin and boot than Sportage or RAV4",
+        "6-speed DCT feels different from an e-CVT at crawl speed",
+        "Euro NCAP star count is safety-pack dependent"
+      ],
+      "bestFor": "Urban/suburban family use with high annual mileage and no home charger.",
+      "notes": "Only marginally cheaper than the Sportage on list price, but should be cheaper on fuel and easier in town. Deliberately include uphill crawling, stop-start traffic and parking in the test drive to judge the DCT.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A0%D7%99%D7%A8%D7%95-%D7%94%D7%99%D7%99%D7%91%D7%A8%D7%99%D7%93"
+    },
+    {
+      "id": "toyota-rav4-hybrid",
+      "make": "Toyota",
+      "model": "RAV4 Hybrid",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "consider",
+      "msrp": 219990,
+      "registration": 2786,
+      "discountTarget": [
+        0,
+        8000
+      ],
+      "residual": 0.62,
+      "fees5": 13900,
+      "insurance5": 42500,
+      "maint5": 8000,
+      "fuel": {
+        "l100": 5.97
+      },
+      "consumption": 5.2,
+      "consumptionBasis": "WLTP",
+      "cargo": 580,
+      "seats": 5,
+      "power": null,
+      "reliability": 9.0,
+      "safety": 7.5,
+      "safetyBasis": "5-star Euro NCAP, but 2019 protocol — not comparable with a 2024-protocol score",
+      "estimates": [
+        "cargo"
+      ],
+      "drivetrain": "2.5 L full hybrid, e-CVT, FWD or AWD",
+      "trims": "E-XPERIENCE FWD ₪219,990 · E-MOTION FWD ₪242,990 · E-XCLUSIVE FWD ₪275,990 · E-XCLUSIVE SKY AWD ₪299,990.",
+      "pros": [
+        "Strongest modeled residual in the study (~62%)",
+        "Spacious — ~580 L makes strollers and airport runs easy",
+        "Efficient for its size",
+        "Mature hybrid concept, FWD and AWD offered"
+      ],
+      "cons": [
+        "Over ₪220k including registration",
+        "Top trim adds ₪80,000 without transforming family utility",
+        "Euro NCAP result is from an older, less demanding protocol"
+      ],
+      "bestFor": "Families keeping the car many years and prioritising low ownership drama over low purchase price.",
+      "notes": "The key economic question is trim discipline. For mostly paved Israeli driving, take the FWD car unless there is a concrete need for AWD. Check the exact VIN against Toyota's campaign database rather than assuming internet reports apply.",
+      "warranty": "Toyota Relax + hybrid-battery program; confirm exact term by VIN/order.",
+      "link": "https://www.toyota.co.il/new-cars/rav4"
+    },
+    {
+      "id": "hyundai-tucson-phev",
+      "make": "Hyundai",
+      "model": "Tucson PHEV",
+      "body": "SUV",
+      "powertrain": "Plug-in hybrid",
+      "status": "consider",
+      "msrp": 199990,
+      "registration": 2786,
+      "discountTarget": [
+        5000,
+        12000
+      ],
+      "residual": 0.5,
+      "fees5": 13900,
+      "insurance5": 45000,
+      "maint5": 9000,
+      "fuel": {
+        "l100": 6.4,
+        "kwh100": 18,
+        "evShare": 0.7
+      },
+      "consumption": null,
+      "consumptionBasis": "Weighted PHEV figure is entirely use-pattern dependent",
+      "cargo": 558,
+      "seats": 5,
+      "power": 283,
+      "reliability": 6.0,
+      "safety": 8.0,
+      "safetyBasis": "Modern platform; confirm Israeli-trim safety-pack equivalence",
+      "estimates": [
+        "cargo"
+      ],
+      "evRange": 71,
+      "battery": "≈13.8 kWh — have the dealer write gross/usable capacity, AC charge rate and cable into the quotation",
+      "drivetrain": "1.6 L turbo + electric motor, 283 hp combined",
+      "trims": "One grade ≈₪199,990 + ₪2,786 registration.",
+      "pros": [
+        "Potentially the lowest energy bill here — ~₪21k less than the Sportage over five years",
+        "283 hp; genuinely quick",
+        "Up to 71 km quoted electric range covers most daily Israeli driving",
+        "No long-trip range anxiety"
+      ],
+      "cons": [
+        "The entire case collapses if you don't charge habitually",
+        "Greater mechanical and electrical complexity",
+        "Limited local long-term PHEV reliability evidence",
+        "Home charger installation is a real cost and a real constraint"
+      ],
+      "bestFor": "Detached-house or private-parking families — or apartment owners with a legally and technically secure charging point.",
+      "notes": "Drag the 'driven on electricity' slider to see how fast the advantage evaporates. Without a reliable charger, treat this as a heavy hybrid, not an automatic money-saver. Negotiate the charging ecosystem — wallbox, installation distance, circuit protection, cable — not just the car.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.hyundaimotors.co.il/models/tucson-phev"
+    },
+    {
+      "id": "hyundai-elantra-hybrid",
+      "make": "Hyundai",
+      "model": "Elantra Hybrid",
+      "body": "Sedan",
+      "powertrain": "Full hybrid",
+      "status": "consider",
+      "msrp": 169990,
+      "registration": 2450,
+      "discountTarget": [
+        4000,
+        10000
+      ],
+      "residual": 0.52,
+      "fees5": 12300,
+      "insurance5": 37500,
+      "maint5": 7500,
+      "fuel": {
+        "l100": 5.42
+      },
+      "consumption": 5.43,
+      "consumptionBasis": "Auto.co.il real-world test (18.4 km/l). Manufacturer claim is ~4.4 L/100 km",
+      "cargo": 474,
+      "seats": 5,
+      "power": 139,
+      "reliability": 7.5,
+      "safety": 6.5,
+      "safetyBasis": "No current Euro NCAP rating applicable to the Israeli car; local safety equipment varies by trim",
+      "estimates": [],
+      "drivetrain": "1.6 L GDI hybrid + electric motor, 6-speed DCT",
+      "trims": "Prime ₪169,990 · Premium ₪177,991 · Supreme ₪181,990 · Luxury ₪188,990.",
+      "pros": [
+        "Cheapest acquisition price of the modeled set",
+        "Second-cheapest five-year cost",
+        "Rare thing: a measured local economy figure, not just a lab claim",
+        "High local sales volume means parts, service familiarity and used-market recognition"
+      ],
+      "cons": [
+        "Sedan-only cargo access and lower seating position",
+        "No directly applicable current Euro NCAP result",
+        "6-DCT worth experiencing at crawl speed and in repeated parking"
+      ],
+      "bestFor": "High-mileage families who don't need SUV packaging.",
+      "notes": "The honest benchmark of this whole study: claimed ~4.4 L/100 km, measured ~5.43 L/100 km locally. That 23% gap is why the cost model budgets above headline consumption for every car here.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.hyundaimotors.co.il/models/elantra-hybrid/"
+    },
+    {
+      "id": "renault-symbioz-etech",
+      "make": "Renault",
+      "model": "Symbioz E-Tech",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "consider",
+      "msrp": 159990,
+      "registration": 2076,
+      "discountTarget": [
+        0,
+        12000
+      ],
+      "residual": 0.45,
+      "fees5": 10400,
+      "insurance5": 37500,
+      "maint5": 8500,
+      "fuel": {
+        "l100": 5.3
+      },
+      "consumption": 5.5,
+      "consumptionBasis": "Green NCAP Sep 2026 measured 4.2 L/100 km warm, 6.8 L/100 km highway — a wide, honest spread",
+      "cargo": 624,
+      "cargoMax": 1582,
+      "seats": 5,
+      "power": 160,
+      "reliability": 5.5,
+      "safety": 6.5,
+      "safetyBasis": "Euro NCAP 2024: adult 73%, child 80%, VRU 76%, safety assist 69%. Weak driver-chest protection noted in one frontal test",
+      "estimates": [
+        "consumption"
+      ],
+      "drivetrain": "E-Tech full hybrid, 160 hp",
+      "trims": "Current promotion from ₪159,990 — confirm whether this is already the special price.",
+      "pros": [
+        "Lowest purchase price of any crossover here",
+        "Rear bench slides up to 16 cm; up to ~624 L, 1,582 L seats folded",
+        "Google-based 10.4-inch multimedia",
+        "Credible real-world efficiency, independently measured"
+      ],
+      "cons": [
+        "Weakest safety scores in the comparison",
+        "No local long-term owner record — it's brand new here",
+        "Conservative 45% residual assumption is the lowest modeled",
+        "The advertised price may already be the discount"
+      ],
+      "bestFor": "Value-focused buyers who will negotiate hard and accept residual-value risk.",
+      "notes": "The Green NCAP spread (4.2 warm vs 6.8 highway) is the single best warning in this research against treating one WLTP number as the cost of every journey. If Israeli buyers take to the model, the modeled depreciation may prove too pessimistic.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.renault.co.il/cars/symbioz/overview.html"
+    },
+    {
+      "id": "toyota-camry-hybrid",
+      "make": "Toyota",
+      "model": "Camry Hybrid",
+      "body": "Sedan",
+      "powertrain": "Full hybrid",
+      "status": "consider",
+      "msrp": 214990,
+      "registration": 2786,
+      "discountTarget": [
+        0,
+        8000
+      ],
+      "residual": 0.58,
+      "fees5": 13900,
+      "insurance5": 42500,
+      "maint5": 7500,
+      "fuel": {
+        "l100": 5.53
+      },
+      "consumption": 4.8,
+      "consumptionBasis": "~4.8 L/100 km — verify against the Israeli certificate",
+      "cargo": null,
+      "seats": 5,
+      "power": 230,
+      "reliability": 8.5,
+      "safety": 7.5,
+      "safetyBasis": "5-star Euro NCAP, earlier protocol",
+      "estimates": [
+        "consumption"
+      ],
+      "drivetrain": "2.5 L full hybrid, e-CVT, ~230 hp depending on homologation",
+      "trims": "From ₪214,990 + ₪2,786 registration; detailed trim list not exposed in the retrieved page.",
+      "pros": [
+        "Excellent rear-seat comfort",
+        "Streamlined sedan delivers strong highway efficiency without PHEV complexity",
+        "Mature Toyota hybrid architecture"
+      ],
+      "cons": [
+        "Israeli buyers increasingly prefer crossovers — modeled depreciation is higher than Corolla Cross/RAV4",
+        "Boot capacity and trim breakdown not published in the retrieved source",
+        "No SUV ride height or hatchback opening"
+      ],
+      "bestFor": "Families who do highway distance and don't want an SUV.",
+      "notes": "Cargo volume is left blank rather than approximated — an invented 'official' figure is worse purchasing information than an explicit gap.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.toyota.co.il/new-cars/camry"
+    },
+    {
+      "id": "renault-arkana-etech",
+      "make": "Renault",
+      "model": "Arkana E-Tech",
+      "body": "SUV",
+      "powertrain": "Full hybrid",
+      "status": "consider",
+      "msrp": 177990,
+      "registration": 2450,
+      "discountTarget": [
+        8000,
+        15000
+      ],
+      "residual": 0.45,
+      "fees5": 12300,
+      "insurance5": 39000,
+      "maint5": 8500,
+      "fuel": {
+        "l100": 5.51
+      },
+      "consumption": 4.9,
+      "consumptionBasis": "High-4 L/100 km class; exact current local figure unspecified",
+      "cargo": 480,
+      "seats": 5,
+      "power": 145,
+      "reliability": 6.0,
+      "safety": 6.5,
+      "safetyBasis": "Earlier-generation Euro NCAP rating; the protocol is no longer current",
+      "estimates": [
+        "consumption",
+        "cargo"
+      ],
+      "drivetrain": "1.6 L E-Tech full hybrid, ~145 hp",
+      "trims": "Evolution ₪177,990 · Techno ₪180,990 (+ ₪2,450 registration).",
+      "pros": [
+        "Distinctive coupé-SUV design",
+        "Efficient E-Tech hybrid architecture",
+        "Largest negotiation band in the comparison"
+      ],
+      "cons": [
+        "Squeezed by Renault's own, newer, cheaper Symbioz",
+        "Multi-mode E-Tech transmission is technically unusual",
+        "Older Euro NCAP protocol",
+        "Low modeled residual"
+      ],
+      "bestFor": "Buyers who specifically prefer its design or driving position — and who negotiate hard.",
+      "notes": "Internal competition is the problem: the newer, more family-oriented Symbioz starts materially lower. Demand a stronger transaction-price concession, and check that all control-software updates have been applied.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.renault.co.il/pricing.html"
+    },
+    {
+      "id": "kia-sorento-hybrid",
+      "make": "Kia",
+      "model": "Sorento Hybrid",
+      "body": "3-row SUV",
+      "powertrain": "Full hybrid",
+      "status": "three-row",
+      "msrp": 319900,
+      "registration": 3899,
+      "discountTarget": [
+        8000,
+        18000
+      ],
+      "residual": 0.52,
+      "fees5": 19500,
+      "insurance5": 52500,
+      "maint5": 10000,
+      "fuel": {
+        "l100": 7.52
+      },
+      "consumption": 6.53,
+      "consumptionBasis": "Official, Kia Israel",
+      "cargo": 179,
+      "cargoMax": 813,
+      "seats": 6,
+      "power": 230,
+      "reliability": 7.0,
+      "safety": 7.5,
+      "safetyBasis": "5-star Euro NCAP for this generation, older protocol",
+      "estimates": [],
+      "drivetrain": "1.6 L turbo hybrid, 230 hp combined",
+      "trims": "Current hybrid grade ₪319,900 + ₪3,899 registration.",
+      "pros": [
+        "Clearest published three-row specification in the study",
+        "2+2+2 captain's chairs make third-row access easy",
+        "813 L with the third row folded",
+        "230 hp"
+      ],
+      "cons": [
+        "Six seats, not seven — this is a deal-breaker for some families",
+        "Only 179 L with all three rows in use",
+        "Cost is driven by depreciation and insurance, not fuel"
+      ],
+      "bestFor": "Families who need a genuine third row and prefer separated second-row seats.",
+      "notes": "The captain-chair layout is either a major advantage or a deal-breaker. For a family with three children who often carry grandparents, that distinction matters more than horsepower. Cargo here is the all-rows-up figure; 813 L is available with row three folded.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A7%D7%99%D7%94-%D7%A1%D7%95%D7%A8%D7%A0%D7%98%D7%95"
+    },
+    {
+      "id": "hyundai-santa-fe-hybrid",
+      "make": "Hyundai",
+      "model": "Santa Fe Hybrid",
+      "body": "3-row SUV",
+      "powertrain": "Full hybrid",
+      "status": "three-row",
+      "msrp": 329990,
+      "registration": 3899,
+      "discountTarget": [
+        10000,
+        20000
+      ],
+      "residual": 0.52,
+      "fees5": 19500,
+      "insurance5": 55000,
+      "maint5": 10000,
+      "fuel": {
+        "l100": 7.29
+      },
+      "consumption": 6.5,
+      "consumptionBasis": "Mid-6 L/100 km class; exact local WLTP figure unspecified",
+      "cargo": null,
+      "seats": 7,
+      "power": 215,
+      "reliability": 6.5,
+      "safety": 8.0,
+      "safetyBasis": "New-generation Euro NCAP result varies with safety equipment; verify Israeli-trim equivalence",
+      "estimates": [
+        "consumption"
+      ],
+      "drivetrain": "1.6 L turbo full hybrid, ~215 hp — reconfirm local output",
+      "trims": "Ultimate ₪329,990 · Excellence ₪359,990 (+ registration).",
+      "pros": [
+        "Genuine large-family cabin with 6/7-seat configurations",
+        "Can replace a minivan for many households",
+        "Refined, modern package",
+        "No charging dependency"
+      ],
+      "cons": [
+        "Modeled depreciation alone (~₪158k) is close to a Corolla Cross's entire five-year cost",
+        "Highest insurance and service exposure here",
+        "Buying it for only four occupants wastes most of the premium",
+        "Local VDA cargo figure unspecified in the retrieved source"
+      ],
+      "bestFor": "Larger families who regularly use more than five seats.",
+      "notes": "Not a rational 'upgrade' simply because the budget permits it. It makes sense where the extra row is genuinely used, adults actually occupy the rear seats, or the flexibility avoids a second vehicle. Confirm the local seat configuration when ordering.",
+      "warranty": "Exact 2026 term unspecified in the retrieved source.",
+      "link": "https://www.hyundaimotors.co.il/models/santa-fe-hybrid"
+    },
+    {
+      "id": "mazda-cx-90-mhev",
+      "make": "Mazda",
+      "model": "CX-90 MHEV",
+      "body": "3-row SUV",
+      "powertrain": "Mild hybrid",
+      "status": "three-row",
+      "msrp": 254900,
+      "registration": 3899,
+      "discountTarget": [
+        10000,
+        20000
+      ],
+      "residual": 0.48,
+      "fees5": 19500,
+      "insurance5": 50000,
+      "maint5": 11000,
+      "fuel": {
+        "l100": 9.51
+      },
+      "consumption": 9.5,
+      "consumptionBasis": "Derived from the modeled five-year fuel budget — materially higher than any full hybrid here",
+      "cargo": null,
+      "seats": 7,
+      "power": null,
+      "reliability": 6.0,
+      "safety": 7.0,
+      "safetyBasis": "Current safety specification should be checked against the exact Israeli VIN",
+      "estimates": [
+        "consumption"
+      ],
+      "drivetrain": "3.3 L turbo inline-six with 48V mild-hybrid assistance",
+      "trims": "Comfort ₪254,900 · Executive ₪279,900 · Premium 8S ₪304,900 · Premium 7S ₪304,900 · Premium Black ₪329,900.",
+      "pros": [
+        "Premium chassis and powertrain character",
+        "Seven or eight seats",
+        "Significantly lower entry price than Sorento or Santa Fe"
+      ],
+      "cons": [
+        "Highest energy cost of the whole set (~₪55k over five years)",
+        "A 48V mild hybrid is NOT comparable to a full hybrid — the badge misleads",
+        "Low local volume widens residual and reliability uncertainty",
+        "New-vehicle warranty terms not exposed in the retrieved price material"
+      ],
+      "bestFor": "Buyers who want large-family capacity with a premium driving character and will absorb the fuel bill.",
+      "notes": "Do not compare this with a Corolla Cross or Niro as if all 'hybrid' badges imply the same electrification. Mazda's Israeli parts material states a 12-month unlimited-km warranty on qualifying genuine installed parts; confirm the new-vehicle terms on the purchase contract.",
+      "warranty": "New-car term unspecified; genuine installed parts 12 months/unlimited km.",
+      "link": "https://mazda.co.il/car-list"
+    }
+  ],
+  "quoteOnly": [
+    {
+      "id": "nissan-qashqai-epower",
+      "make": "Nissan",
+      "model": "Qashqai e-POWER",
+      "body": "SUV",
+      "powertrain": "e-POWER",
+      "seats": 5,
+      "reason": "The current indexed Nissan Israel price page did not expose a clear trim-specific e-POWER MSRP. No invented price has been placed in the cost model.",
+      "pros": [
+        "EV-like smoothness with no home charger required",
+        "Up to ~1,200 km between refuelling stops under Nissan's stated conditions",
+        "Unusually clear published warranty"
+      ],
+      "cons": [
+        "No verifiable trim-specific Israeli price",
+        "Next-generation local data is still young"
+      ],
+      "notes": "In e-POWER the electric motor always drives the wheels and the petrol engine generates electricity — external charging is never required. Genuinely worth a test drive for a family that wants EV feel without a charger.",
+      "warranty": "3 years / 100,000 km vehicle; 5 years / 100,000 km electric-drive components including motor and hybrid battery — whichever comes first.",
+      "link": "https://www.nissan.co.il/vehicles/new/qashqai.html"
+    },
+    {
+      "id": "nissan-x-trail-epower",
+      "make": "Nissan",
+      "model": "X-Trail e-POWER",
+      "body": "3-row SUV",
+      "powertrain": "e-POWER",
+      "seats": 7,
+      "reason": "The X-Trail range starts at ₪209,990 (₪212,776 with registration), but that is a model-line 'from' price, not a confirmed e-POWER grade price.",
+      "pros": [
+        "Marketed explicitly as a seven-seat family SUV",
+        "e-POWER architecture is worth experiencing before committing to a parallel hybrid",
+        "Same clear Nissan warranty terms"
+      ],
+      "cons": [
+        "Published 'from' price cannot be used in a financial comparison without written drivetrain confirmation"
+      ],
+      "notes": "For a family that actually needs seven seats, this belongs on the same test-drive day as the Sorento and Santa Fe.",
+      "warranty": "3 years / 100,000 km vehicle; 5 years / 100,000 km electric-drive components.",
+      "link": "https://www.nissan.co.il/vehicles/new/x-trail.html"
+    }
+  ],
+  "sources": [
+    {
+      "label": "Toyota Israel — Corolla Cross",
+      "url": "https://www.toyota.co.il/new-cars/corolla-cross"
+    },
+    {
+      "label": "Toyota Israel — RAV4",
+      "url": "https://www.toyota.co.il/new-cars/rav4"
+    },
+    {
+      "label": "Toyota Israel — Camry",
+      "url": "https://www.toyota.co.il/new-cars/camry"
+    },
+    {
+      "label": "Hyundai Israel — Tucson PHEV",
+      "url": "https://www.hyundaimotors.co.il/models/tucson-phev"
+    },
+    {
+      "label": "Hyundai Israel — Elantra Hybrid",
+      "url": "https://www.hyundaimotors.co.il/models/elantra-hybrid/"
+    },
+    {
+      "label": "Hyundai Israel — Santa Fe Hybrid",
+      "url": "https://www.hyundaimotors.co.il/models/santa-fe-hybrid"
+    },
+    {
+      "label": "Kia Israel — Niro",
+      "url": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A0%D7%99%D7%A8%D7%95-%D7%94%D7%99%D7%99%D7%91%D7%A8%D7%99%D7%93"
+    },
+    {
+      "label": "Kia Israel — Sportage Hybrid spec sheet",
+      "url": "https://kia-israel.co.il/catalog/mifrat-sportage-hybrid.pdf"
+    },
+    {
+      "label": "Kia Israel — Sorento",
+      "url": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A7%D7%99%D7%94-%D7%A1%D7%95%D7%A8%D7%A0%D7%98%D7%95"
+    },
+    {
+      "label": "Renault Israel — Symbioz",
+      "url": "https://www.renault.co.il/cars/symbioz/overview.html"
+    },
+    {
+      "label": "Renault Israel — price list",
+      "url": "https://www.renault.co.il/pricing.html"
+    },
+    {
+      "label": "Mazda Israel — price list",
+      "url": "https://mazda.co.il/car-list"
+    },
+    {
+      "label": "Nissan Israel — hybrid & e-POWER",
+      "url": "https://www.nissan.co.il/vehicles/hev.html"
+    },
+    {
+      "label": "Euro NCAP — Renault Symbioz assessment",
+      "url": "https://www.euroncap.com/assessments/1076/"
+    },
+    {
+      "label": "Green NCAP — Symbioz E-Tech 160, 2026 results",
+      "url": "https://news.euroncap.com/greenncap/choose-a-car/renault-symbioz---green-ncap-2026-results---three-and-a-half-stars/s/f7b7ab27-1ca9-4bb2-b1f7-c75b96531db6"
+    },
+    {
+      "label": "Euro NCAP — test protocols",
+      "url": "https://www.euroncap.com/protocols/"
+    },
+    {
+      "label": "Ministry of Energy — fuel prices",
+      "url": "https://www.gov.il/en/pages/fuel_prices_xls"
+    },
+    {
+      "label": "Electricity Authority — tariff decisions",
+      "url": "https://www.gov.il/he/pages/maagar_ezer_72806_74010"
+    },
+    {
+      "label": "Ministry of Finance — comparing car insurance",
+      "url": "https://haotzarsheli.mof.gov.il/Subject/Pages/Buying-Car-insurance.aspx"
+    },
+    {
+      "label": "Auto.co.il — Elantra Hybrid real-world consumption",
+      "url": "https://www.auto.co.il/cars/hyundai/elantra-hybrid/"
+    }
+  ],
+  "limitations": [
+    "Dealer discounts are opaque. There is no authoritative database of actual Israeli transaction prices by trim; the negotiation bands here are targets inferred from current campaign behaviour, not promises.",
+    "Israeli owner-review data is fragmented and not statistically representative, especially for 2026 newcomers like the Symbioz and Tucson PHEV. Reliability scores are analyst outlooks, not survey results.",
+    "Warranty and scheduled-maintenance detail is inconsistently published. Obtain the exact 2026 warranty booklet and service schedule in writing before paying a non-refundable deposit.",
+    "Future depreciation dominates TCO uncertainty. Fuel cost can be calculated; nobody knows what a 2026 hybrid sells for in 2031. Use these numbers to separate broad economic tiers, not to the last ₪1,000.",
+    "Published MSRP is not the transaction price. Importers use campaigns, display-car offers, finance subsidies and trade-in boosts instead of openly cutting list prices.",
+    "Financing interest is excluded. Illustratively, ₪150,000 over 60 months at a hypothetical 7% nominal rate generates roughly ₪28,000 of interest — enough to erase any discount you negotiate."
+  ],
+  "timeline": [
+    {
+      "phase": "Shortlist",
+      "when": "Days 1–3",
+      "steps": [
+        "Verify official Israeli MSRP and exact drivetrain",
+        "Obtain insurance quotes before choosing the model"
+      ]
+    },
+    {
+      "phase": "Test drive",
+      "when": "Days 3–7",
+      "steps": [
+        "Drive with a normal family load",
+        "Check child seats, stroller, parking and highway noise"
+      ]
+    },
+    {
+      "phase": "Negotiate",
+      "when": "Days 5–10",
+      "steps": [
+        "Request a written cash quotation",
+        "Negotiate trade-in separately",
+        "Compare bank, importer and external finance on total shekels repaid",
+        "Confirm warranty and maintenance schedule in writing"
+      ]
+    },
+    {
+      "phase": "Order",
+      "when": "Signing day",
+      "steps": [
+        "Review VIN, model year and delivery terms",
+        "Pay a deposit only against a written order",
+        "Confirm cancellation and delay provisions"
+      ]
+    },
+    {
+      "phase": "Pre-delivery",
+      "when": "Before handover",
+      "steps": [
+        "Arrange compulsory and comprehensive insurance",
+        "Install the home charger if buying the PHEV",
+        "Dealer processes first registration"
+      ]
+    },
+    {
+      "phase": "Delivery",
+      "when": "Handover day",
+      "steps": [
+        "Inspect paint, wheels, glass and accessories",
+        "Record odometer and VIN",
+        "Verify two keys, manuals, warranty and charging cable"
+      ]
+    },
+    {
+      "phase": "Ownership",
+      "when": "First year on",
+      "steps": [
+        "Follow service-book intervals",
+        "Renew registration and insurance annually",
+        "Keep invoices and hybrid/PHEV battery checks for resale"
+      ]
+    }
+  ],
+  "images": {
+    "toyota-corolla-cross-hybrid": {
+      "src": "images/toyota-corolla-cross-hybrid.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Toyota_Corolla_Cross_Hybrid_1X7A6284.jpg",
+      "caption": "Toyota Corolla Cross Hybrid"
+    },
+    "kia-sportage-hybrid": {
+      "src": "images/kia-sportage-hybrid.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Kia_Sportage_(NQ5)_1X7A0319.jpg",
+      "caption": "Kia Sportage Hybrid"
+    },
+    "kia-niro-hybrid": {
+      "src": "images/kia-niro-hybrid.jpg",
+      "credit": "Elise240SX",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:2023_Kia_Niro_Hybrid_EX_in_Runway_Red,_Front_Right,_10-09-2023.jpg",
+      "caption": "Kia Niro Hybrid"
+    },
+    "toyota-rav4-hybrid": {
+      "src": "images/toyota-rav4-hybrid.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:2019_Toyota_RAV4_Hybrid_01.jpg",
+      "caption": "Toyota RAV4 Hybrid"
+    },
+    "hyundai-tucson-phev": {
+      "src": "images/hyundai-tucson-phev.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Hyundai_Tucson_(NX4)_PHEV_IMG_4375.jpg",
+      "caption": "Hyundai Tucson PHEV"
+    },
+    "hyundai-elantra-hybrid": {
+      "src": "images/hyundai-elantra-hybrid.jpg",
+      "credit": "Captainmorlypogi1959",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Hyundai_Elantra_1.6_GLS_HEV_Hybrid_2025.jpg",
+      "caption": "Hyundai Elantra Hybrid"
+    },
+    "toyota-camry-hybrid": {
+      "src": "images/toyota-camry-hybrid.jpg",
+      "credit": "Damian B Oh",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Toyota_Camry_Hybrid_XLE_XV80_Platinum_White_Pearl_Mica_(2).jpg",
+      "caption": "Toyota Camry Hybrid"
+    },
+    "renault-symbioz-etech": {
+      "src": "images/renault-symbioz-etech.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Renault_Symbioz_Concept_(2017),_Paris_Motor_Show_2018,_IMG_0477.jpg",
+      "caption": "Renault Symbioz E-Tech"
+    },
+    "renault-arkana-etech": {
+      "src": "images/renault-arkana-etech.jpg",
+      "credit": "Tokumeigakarinoaoshima",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Osaka_Auto_Messe_2022_(545)_-_Renault_ARKANA_R.S._LINE_E-TECH_HYBRID_(7AA-LJLH4MH).jpg",
+      "caption": "Renault Arkana E-Tech"
+    },
+    "kia-sorento-hybrid": {
+      "src": "images/kia-sorento-hybrid.jpg",
+      "credit": "Benespit",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:2024_Kia_Sorento_(MQ4)_Hybrid_1_cropped.jpg",
+      "caption": "Kia Sorento Hybrid"
+    },
+    "hyundai-santa-fe-hybrid": {
+      "src": "images/hyundai-santa-fe-hybrid.jpg",
+      "credit": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:2024_Hyundai_Santa_Fe_(MX5)_IMG_5295.jpg",
+      "caption": "Hyundai Santa Fe Hybrid"
+    },
+    "mazda-cx-90-mhev": {
+      "src": "images/mazda-cx-90-mhev.jpg",
+      "credit": "Ethan Llamas",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:2024_Mazda_CX-90_3.3_e-Skyactiv-G_AWD_HEV_Turbo_Exclusive_in_Artisan_Red_Premium,_06-15-2024.jpg",
+      "caption": "Mazda CX-90 MHEV"
+    }
+  },
+  "dealers": {
+    "Toyota": {
+      "importer": "Union Motors",
+      "branchesUrl": "https://www.toyota.co.il/agencies",
+      "testDriveUrl": "https://www.toyota.co.il/forms/test-drive",
+      "showrooms": [
+        {
+          "name": "Toyota MTM",
+          "address": "Het Nachum St. 16, opposite Sami Ofer Stadium, Haifa",
+          "addressHe": "חט׳ נחום 16, מול אצטדיון סמי עופר, חיפה",
+          "phone": "04-8550550",
+          "kind": "Sales",
+          "mapQuery": "חטיבת נחום 16 חיפה טויוטה MTM",
+          "source": "https://www.toyota.co.il/agencies"
+        },
+        {
+          "name": "Toyota Amin",
+          "address": "Derech Bar Yehuda 113 (towards Nesher), Haifa",
+          "addressHe": "דרך בר יהודה 113, לכיוון נשר - חיפה",
+          "phone": "072-2770000",
+          "kind": "Sales",
+          "mapQuery": "דרך בר יהודה 113 חיפה טויוטה אמין",
+          "source": "https://www.toyota.co.il/agencies"
+        },
+        {
+          "name": "Prime Motors",
+          "address": "Ba'alei Melacha St. 6, Haifa",
+          "addressHe": "בעלי מלאכה 6, חיפה",
+          "phone": "077-3339400",
+          "kind": "Service (likely)",
+          "mapQuery": "בעלי מלאכה 6 חיפה פריים מוטורס",
+          "source": "https://www.toyota.co.il/agencies"
+        }
+      ]
+    },
+    "Kia": {
+      "importer": "Talcar",
+      "branchesUrl": "https://kia-israel.co.il/",
+      "testDriveUrl": null,
+      "showrooms": [
+        {
+          "name": "Kia Haifa — Central Branch",
+          "address": "Derech Yafo St. 135, Haifa",
+          "addressHe": "דרך יפו 135, חיפה",
+          "phone": "04-6609245",
+          "hours": "Sun–Thu 08:30–18:00 · Fri 08:30–13:00",
+          "kind": "Sales",
+          "mapQuery": "דרך יפו 135 חיפה קיה",
+          "source": "https://kia-israel.co.il/"
+        },
+        {
+          "name": "Kia Haifa — K. Tzafon",
+          "address": "Sderot HaHistadrut 215, Haifa",
+          "addressHe": "שדרות ההסתדרות 215, חיפה",
+          "phone": "04-8418608",
+          "hours": "Sun–Thu 08:00–17:00 · Fri 08:30–13:00",
+          "kind": "Sales",
+          "mapQuery": "שדרות ההסתדרות 215 חיפה קיה",
+          "source": "https://kia-israel.co.il/"
+        },
+        {
+          "name": "Kia Haifa Service — HaBonim",
+          "address": "Tel Aviv St. 20, Haifa",
+          "addressHe": "רח׳ תל אביב 20, חיפה",
+          "phone": "04-7703242",
+          "hours": "Sun–Thu 07:00–16:00",
+          "kind": "Service only",
+          "mapQuery": "רחוב תל אביב 20 חיפה קיה שירות",
+          "source": "https://kia-israel.co.il/"
+        }
+      ]
+    },
+    "Hyundai": {
+      "importer": "Colmobil",
+      "branchesUrl": "https://www.hyundaimotors.co.il/show-rooms/",
+      "testDriveUrl": "https://www.hyundaimotors.co.il/show-rooms/merkaz-haifa/",
+      "showrooms": [
+        {
+          "name": "Hyundai Haifa Center",
+          "address": "Derech Yafo 157, Haifa",
+          "addressHe": "דרך יפו 157, חיפה",
+          "phone": "04-6107888",
+          "hours": "Sun–Thu 08:30–18:00 · Fri 08:30–13:00",
+          "kind": "Sales",
+          "mapQuery": "דרך יפו 157 חיפה יונדאי",
+          "source": "https://www.hyundaimotors.co.il/show-rooms/merkaz-haifa/"
+        },
+        {
+          "name": "Hyundai Haifa Check Post",
+          "address": "Sderot HaHistadrut 49, Haifa",
+          "addressHe": "שדרות ההסתדרות 49, חיפה",
+          "phone": "04-8467000",
+          "hours": "Sun–Thu 08:30–18:00 · Fri 08:30–13:00",
+          "kind": "Sales",
+          "mapQuery": "שדרות ההסתדרות 49 חיפה יונדאי",
+          "source": "https://www.hyundaimotors.co.il/show-rooms/haifa-check-post/"
+        },
+        {
+          "name": "Hyundrive HaTzafon — service",
+          "address": "Ba'alei Melacha 24, Haifa",
+          "addressHe": "בעלי מלאכה 24, חיפה",
+          "phone": "04-8405888",
+          "hours": "Sun–Thu 07:30–16:00",
+          "kind": "Service only",
+          "mapQuery": "בעלי מלאכה 24 חיפה יונדרייב",
+          "source": "https://www.hyundaimotors.co.il/service-centers/hyundai-hazfon/"
+        },
+        {
+          "name": "Hyundai Colmobil Haifa — service",
+          "address": "Hiram 15, Haifa",
+          "addressHe": "חירם 15, חיפה",
+          "phone": "04-8614111",
+          "hours": "Sun–Thu 07:30–16:00",
+          "kind": "Service only",
+          "mapQuery": "חירם 15 חיפה יונדאי כלמוביל",
+          "source": "https://www.hyundaimotors.co.il/service-centers/colmobil-haifa/"
+        },
+        {
+          "name": "Hyundai On Gal Haifa — service",
+          "address": "Derech Hativat Golani 23, Haifa",
+          "addressHe": "דרך חטיבת גולני 23, חיפה",
+          "phone": "04-8530055",
+          "hours": "Sun–Thu 07:30–16:00",
+          "kind": "Service only",
+          "mapQuery": "דרך חטיבת גולני 23 חיפה יונדאי",
+          "source": "https://www.hyundaimotors.co.il/service-centers/hyundai-haifa/"
+        }
+      ]
+    },
+    "Renault": {
+      "importer": "Carasso",
+      "branchesUrl": "https://www.renault.co.il/showrooms.html",
+      "testDriveUrl": "https://www.renault.co.il/test-drive.html",
+      "showrooms": [
+        {
+          "name": "Renault Haifa Showroom",
+          "address": "Sderot HaHistadrut 163, Haifa",
+          "addressHe": "שד׳ ההסתדרות 163, חיפה",
+          "phone": "*5501",
+          "hours": "Sun–Thu 08:30–18:00 · Fri 08:30–13:00",
+          "kind": "Sales",
+          "mapQuery": "שדרות ההסתדרות 163 חיפה רנו",
+          "source": "https://www.renault.co.il/showrooms.html"
+        }
+      ]
+    },
+    "Nissan": {
+      "importer": "Carasso",
+      "branchesUrl": "https://www.nissan.co.il/dealer-locator.html",
+      "testDriveUrl": "https://www.nissan.co.il/test-drive-T5.html",
+      "showrooms": []
+    }
+  },
+  "dealerNote": "Addresses were transcribed from each importer's own website. No Nissan Haifa-area address could be verified — Nissan's dealer locator renders entirely client-side from an API, so nothing is listed rather than guessed. No branch of any of these brands was found in the Krayot, Nesher, Tirat Carmel or Kiryat Tiv'on; the only Haifa-area presence is inside Haifa itself. Phone a branch before travelling — some locations are service only."
+}

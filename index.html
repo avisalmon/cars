@@ -3,95 +3,193 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Which Car Should I Buy?</title>
-<meta name="description" content="A data-driven car buying shortlist with a weighted scoring model.">
+<title>New Family Car in Israel — Hybrid &amp; PHEV Shortlist</title>
+<meta name="description" content="Data-driven comparison of new hybrid and plug-in hybrid family cars in Israel, October 2026, with a live five-year cost model and Haifa-area showrooms.">
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
 </head>
 <body>
+
 <header class="site-header">
   <div class="wrap header-inner">
-    <div>
-      <h1 id="site-title">Which Car Should I Buy?</h1>
+    <div class="header-text">
+      <h1 id="site-title">New Family Car in Israel</h1>
       <p class="subtitle" id="site-subtitle"></p>
     </div>
+    <nav class="header-nav">
+      <a href="#picks">Top picks</a>
+      <a href="#compare">Compare</a>
+      <a href="#method">Method</a>
+    </nav>
     <button id="theme-toggle" class="icon-btn" type="button" title="Toggle theme" aria-label="Toggle theme">◐</button>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="panel" id="verdict-panel" aria-live="polite">
-    <h2 class="panel-title">Current verdict</h2>
-    <div id="verdict" class="verdict"></div>
+<main>
+
+  <section class="wrap section">
+    <div class="panel verdict-panel">
+      <div class="verdict-main">
+        <span class="eyebrow">The call</span>
+        <h2 id="verdict-headline"></h2>
+        <p id="verdict-text" class="lede"></p>
+        <ol id="verdict-hierarchy" class="hierarchy"></ol>
+      </div>
+      <div class="verdict-side" id="verdict-cards" aria-live="polite"></div>
+    </div>
   </section>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Priorities</h2>
-          <button id="reset-weights" class="link-btn" type="button">Reset</button>
-        </div>
-        <p class="muted small">Drag to say how much each factor matters. 0 = ignore it.</p>
-        <div id="weights"></div>
-      </section>
+  <section class="wrap section" id="picks">
+    <div class="section-head">
+      <h2>Top picks right now</h2>
+      <p class="muted small">The six highest-scoring cars under your current priorities — with where to see them around Haifa.</p>
+      <p class="muted small" id="dealer-note"></p>
+    </div>
+    <div id="pick-cards" class="pick-grid"></div>
+  </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Filters</h2>
-          <button id="reset-filters" class="link-btn" type="button">Clear</button>
-        </div>
-        <label class="field">
-          <span>Search</span>
-          <input type="search" id="search" placeholder="Make, model, note…">
-        </label>
-        <label class="field">
-          <span>Max price: <b id="budget-value"></b></span>
-          <input type="range" id="budget" min="0" max="100000" step="500">
-        </label>
-        <div class="field">
-          <span>Body</span>
-          <div id="filter-body" class="chips"></div>
-        </div>
-        <div class="field">
-          <span>Fuel</span>
-          <div id="filter-fuel" class="chips"></div>
-        </div>
-        <div class="field">
-          <span>Status</span>
-          <div id="filter-status" class="chips"></div>
-        </div>
-      </section>
-    </aside>
+  <section class="wrap section" id="compare">
+    <div class="section-head">
+      <h2>Full comparison</h2>
+      <p class="muted small">Every cost below is recomputed live from the assumptions you set.</p>
+    </div>
 
-    <section class="content">
-      <div class="toolbar">
-        <p class="muted small" id="result-count"></p>
-        <label class="inline-field">
-          <span class="muted small">Sort</span>
-          <select id="sort">
-            <option value="score">Best score</option>
-            <option value="price">Lowest price</option>
-            <option value="running">Lowest running cost</option>
-            <option value="reliability">Most reliable</option>
-            <option value="name">Name (A–Z)</option>
-          </select>
-        </label>
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Your priorities</h3>
+            <button id="reset-weights" class="link-btn" type="button">Reset</button>
+          </div>
+          <p class="muted small nudge">How much does each factor matter? 0 removes it entirely.</p>
+          <div id="weights"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Cost assumptions</h3>
+            <button id="reset-assumptions" class="link-btn" type="button">Reset</button>
+          </div>
+          <div id="assumptions"></div>
+          <label class="switch">
+            <input type="checkbox" id="apply-discount">
+            <span>Apply mid-range negotiation target</span>
+          </label>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Filters</h3>
+            <button id="reset-filters" class="link-btn" type="button">Clear</button>
+          </div>
+          <label class="field">
+            <span>Search</span>
+            <input type="search" id="search" placeholder="Make, model, note…">
+          </label>
+          <label class="field">
+            <span>Max cash price: <b id="budget-value"></b></span>
+            <input type="range" id="budget">
+          </label>
+          <div class="field">
+            <span>Body</span>
+            <div id="filter-body" class="chips"></div>
+          </div>
+          <div class="field">
+            <span>Powertrain</span>
+            <div id="filter-powertrain" class="chips"></div>
+          </div>
+          <div class="field">
+            <span>Brand</span>
+            <div id="filter-make" class="chips"></div>
+          </div>
+        </section>
+      </aside>
+
+      <div class="content">
+        <div class="toolbar">
+          <p class="muted small" id="result-count"></p>
+          <label class="inline-field">
+            <span class="muted small">Sort</span>
+            <select id="sort">
+              <option value="score">Best match</option>
+              <option value="tco5">Lowest 5-year cost</option>
+              <option value="acquisition">Lowest cash price</option>
+              <option value="consumption">Most efficient</option>
+              <option value="cargo">Most cargo</option>
+              <option value="name">Name (A–Z)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="table-scroll panel no-pad">
+          <table id="cars-table">
+            <thead id="cars-head"></thead>
+            <tbody id="cars-body"></tbody>
+          </table>
+        </div>
+        <p class="muted small footnote">
+          Click any row for the full cost breakdown, trims, warranty position and Haifa-area showrooms.
+          A <span class="est">dotted value</span> is estimated or not published in the source material.
+        </p>
+
+        <div class="panel quote-panel">
+          <h3 class="panel-title">Worth a test drive — but get a written price first</h3>
+          <div id="quote-only"></div>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="table-scroll panel no-pad">
-        <table id="cars-table">
-          <thead id="cars-head"></thead>
-          <tbody id="cars-body"></tbody>
-        </table>
+  <section class="wrap section" id="method">
+    <div class="section-head">
+      <h2>How the numbers work</h2>
+    </div>
+
+    <div class="method-grid">
+      <div class="panel">
+        <h3 class="panel-title">The cost model</h3>
+        <p class="formula">depreciation + fees + insurance + energy + maintenance</p>
+        <p class="small muted">
+          Purchase price is deliberately <em>excluded</em> from that total — adding it to depreciation would
+          count the acquisition twice. It is shown separately as the cash you need. Financing interest is
+          excluded too, because it depends entirely on your down payment and rate. Illustratively, ₪150,000
+          over 60 months at a hypothetical 7% generates roughly ₪28,000 of interest — enough to erase any
+          discount you negotiate.
+        </p>
+        <p class="small muted">
+          Depreciation is list price × (1 − residual). Energy is recomputed from your kilometres, fuel price
+          and — for the PHEV — your charging share. Consumption is budgeted <em>above</em> headline lab figures:
+          locally, the Elantra Hybrid claims ~4.4 L/100 km but measured ~5.43 L/100 km in testing.
+        </p>
+        <p class="small muted">
+          Reliability and safety are analyst scores on a 1–10 scale, not manufacturer or Euro NCAP scores.
+          Safety deliberately penalises an old five-star result, because Euro NCAP protocols get harder over time.
+        </p>
       </div>
+      <div class="panel">
+        <h3 class="panel-title">What you should distrust</h3>
+        <ul id="limitations" class="small tight"></ul>
+      </div>
+    </div>
 
-      <p class="muted small footnote">
-        Scores are normalised 0–100 across the cars currently shown, then combined with your weights.
-        Change the weights and the ranking changes — that is the point.
-      </p>
-    </section>
-  </div>
+    <div class="panel timeline-panel">
+      <h3 class="panel-title">Typical new-car purchase process in Israel</h3>
+      <div id="timeline" class="timeline"></div>
+    </div>
+
+    <div class="method-grid">
+      <div class="panel">
+        <h3 class="panel-title">Sources</h3>
+        <ul id="sources" class="small tight links"></ul>
+      </div>
+      <div class="panel">
+        <h3 class="panel-title">Photo credits</h3>
+        <ul id="credits" class="small tight links"></ul>
+        <p class="muted small">Photographs illustrate the model generation, not specific Israeli-market trims.</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <dialog id="car-dialog" class="car-dialog">
@@ -101,7 +199,13 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <span class="muted small">Data last updated <span id="updated"></span> · Edit <code>data/cars.json</code> to change the shortlist.</span>
+    <p class="muted small">
+      Market snapshot: Israel, <span id="updated"></span>. New cars only; fully electric vehicles and Chinese brands excluded.
+      Prices are importer MSRP and are <strong>not</strong> transaction prices.
+    </p>
+    <p class="muted small">
+      Not financial, insurance or purchasing advice. Verify every figure against a written dealer quotation before paying a deposit.
+    </p>
   </div>
 </footer>
 

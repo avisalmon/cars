@@ -1,77 +1,129 @@
-# Which Car Should I Buy? 🚗
+# New Family Car in Israel — Hybrid & PHEV Shortlist
 
-A small, dependency-free static site for picking a car with evidence instead of vibes.
-Candidates live in one JSON file; the page scores and ranks them against **your** priorities.
+A static, dependency-free site that compares new hybrid and plug-in hybrid family cars
+available in Israel, built on a reproducible five-year cost-of-ownership model that
+recomputes live from assumptions you control.
+
+Market snapshot: Israel, October 2026. New cars only. Fully electric vehicles and
+Chinese brands are out of scope.
 
 ## What it does
 
-- **Weighted scoring model** — move a slider for each factor (price, reliability, running cost, safety, …) and the ranking re-sorts live.
-- **Normalised scores** — each criterion is min-max normalised 0–100 across the cars currently shown, with "lower is better" factors inverted, then combined as a weighted mean.
-- **Filters** — budget slider, body style, fuel type, shortlist status, free-text search.
-- **Detail view** — click any row for full specs, pros/cons and notes.
-- Weights and theme persist in `localStorage`. No build step, no dependencies.
+- Ranks 12 fully modeled cars against ten criteria you weight yourself (0 removes a criterion).
+- Recomputes every cost figure in the browser from four sliders: kilometres per year,
+  petrol price, electricity price, and the share of PHEV kilometres driven on battery.
+- Shows the six highest-scoring cars as photo cards with official model links and
+  Haifa-area showrooms.
+- Breaks each car's five-year cost into its components, with trims, warranty position,
+  negotiation targets and the pros/cons from the underlying research.
 
-## Editing the data
+## The cost model
 
-Everything you care about is in [`data/cars.json`](data/cars.json).
+```
+5-year cost = depreciation + registration/fees + insurance + energy + maintenance
+```
 
-```jsonc
-{
-  "meta":     { "title": "...", "subtitle": "...", "currency": "$", "updated": "2026-10-08" },
-  "criteria": [ { "key": "price", "label": "Price", "unit": "$", "direction": "lower", "defaultWeight": 9, "hint": "..." } ],
-  "cars":     [ { "id": "...", "make": "...", "model": "...", "price": 32000, "status": "shortlist", "pros": [], "cons": [] } ]
+- **Purchase price is deliberately excluded from that total.** Adding it to depreciation
+  would count the acquisition twice. Cash required is reported separately.
+- **Financing interest is excluded**, because it depends entirely on your down payment and
+  rate. Illustratively, ₪150,000 over 60 months at a hypothetical 7% generates roughly
+  ₪28,000 of interest — enough to erase any discount you negotiate.
+- `depreciation = (msrp − discount) − msrp × residual`. Resale is set by the market, not by
+  your invoice, so a negotiated discount reduces economic cost roughly shekel-for-shekel.
+- Energy is recomputed from your kilometres. For the PHEV it blends electricity and petrol
+  by your charging share.
+- Baseline constants: petrol ₪7.77/L (regulated maximum, 5 Oct 2026), electricity
+  ₪0.6352/kWh (uniform residential tariff incl. VAT, 1 Jul 2026), 15,000 km/yr over 5 years.
+
+### Modeled consumption is not official consumption
+
+`consumption` is the published official figure and is displayed as a spec.
+`fuel.l100` is the *modeling* input and is deliberately higher, because the research budgets
+fuel above headline lab numbers. The Elantra Hybrid validates this: a ~4.4 L/100 km claim
+against ~5.43 L/100 km measured locally. **Keep the two fields separate.**
+
+## Honesty conventions
+
+These are intentional. Do not "fix" them by inventing values.
+
+| Convention | Meaning |
+|---|---|
+| `null` field | The source did not publish it. Rendered as a dotted `—` with a tooltip. |
+| `estimates: ["key"]` | The value is an approximation. Rendered with a dotted underline. |
+| `quoteOnly` array | Cars with no credible transaction price (the two Nissan e-POWER models). They are shown but **never scored or ranked**. |
+| `reliability`, `safety` | Analyst 1–10 scores, **not** survey results or Euro NCAP stars. Safety penalises an old five-star rating, because Euro NCAP protocols get harder over time. |
+| Missing `dealers` entry | No showroom could be verified from the brand's official site. The UI says so rather than guessing an address. |
+| `cargo` vs `cargoMax` | `cargo` is the usable, all-rows-up figure; `cargoMax` (seats folded) appears only in the detail view. |
+
+## Files
+
+```
+index.html             markup and the DOM contract
+css/style.css          theme tokens + layout
+js/app.js              cost model, scoring, rendering
+data/cars-israel.json  single source of truth
+images/                CC-licensed photographs + credits.json
+```
+
+### Editing the data
+
+Everything is in `data/cars-israel.json`:
+
+- `meta.assumptions` — slider defaults.
+- `criteria` — the ten scored criteria. The **first six become the table columns**, in order.
+- `cars` — the modeled cars. Required numeric fields: `msrp`, `registration`, `residual`,
+  `fees5`, `insurance5`, `maint5`, `fuel.l100`.
+- `quoteOnly`, `dealers`, `images`, `sources`, `limitations`, `timeline`.
+
+`dealers` is keyed by make:
+
+```json
+"Toyota": {
+  "importer": "…",
+  "branchesUrl": "…",
+  "testDriveUrl": "…",
+  "showrooms": [
+    { "name": "…", "address": "…", "addressHe": "…", "phone": "…",
+      "kind": "Sales", "mapQuery": "…", "source": "…" }
+  ]
 }
 ```
 
-**Criteria**
+If a brand cannot be verified, omit its `showrooms` rather than inventing any.
 
-| Field | Meaning |
-| --- | --- |
-| `key` | Must match a numeric field name on every car |
-| `direction` | `lower` (cheaper/faster is better) or `higher` |
-| `unit` | `$`, `$/yr`, `/10`, or any free label (`km/l`, `L`, `s`) |
-| `defaultWeight` | 0–10 starting slider position |
+## Photographs
 
-Add a criterion by adding one entry here **and** the matching numeric field on each car.
-The first six criteria become table columns; all of them show in the detail dialog.
-
-**Cars**
-
-`status` is one of `shortlist`, `considering`, or `rejected` (rejected rows are dimmed but still ranked).
-`pros`, `cons`, `notes` and `link` are optional.
+All photographs come from Wikimedia Commons under CC BY-SA 4.0 and are credited in the
+site's Photo credits panel and in `images/credits.json`. They illustrate the model
+generation, **not** the specific Israeli-market trim. Manufacturer press images are
+deliberately not used.
 
 ## Running locally
 
-`fetch()` is blocked on `file://`, so serve the folder:
+`fetch()` is blocked on `file://`, so the folder must be served over HTTP:
 
-```bash
-python -m http.server 8000
-# then open http://localhost:8000
+```powershell
+cd C:\Projects\Cars
+python -m http.server 8777
 ```
+
+Then open <http://localhost:8777/>.
 
 ## Publishing to GitHub Pages
 
-1. Push this folder to a GitHub repo.
-2. **Settings → Pages → Build and deployment → Source: Deploy from a branch**.
-3. Pick your default branch and the `/ (root)` folder, then save.
-
-The `.nojekyll` file is already present so Jekyll won't touch the assets.
-
-## Methodology, honestly
-
-The score is only as good as the numbers you put in. Treat it as a way to make your
-own trade-offs explicit and check whether your gut pick survives contact with your
-stated priorities — not as an objective verdict. Set a weight to 0 to drop a factor entirely.
-
-## Structure
-
-```
-index.html        markup and layout
-css/style.css     theme tokens, light/dark
-js/app.js         scoring, filtering, rendering
-data/cars.json    the only file you need to edit
+```bash
+git remote add origin https://github.com/<user>/<repo>.git
+git push -u origin main
 ```
 
-## License
+Then in the repository: **Settings → Pages → Deploy from a branch → `main` / root**.
+`.nojekyll` is already present so the asset folders are served as-is.
 
-MIT — see [LICENSE](LICENSE).
+## Disclaimer
+
+Not financial, insurance or purchasing advice. Prices are importer MSRP, not transaction
+prices. Verify every figure against a written dealer quotation before paying a deposit.
+
+## Licence
+
+Code and data: MIT (see `LICENSE`). Photographs: CC BY-SA 4.0, credited individually.

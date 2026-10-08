@@ -1,76 +1,107 @@
 (() => {
   'use strict';
 
-  const LS_WEIGHTS = 'cars.weights';
-  const LS_THEME = 'cars.theme';
+  const DATA_URL = 'data/cars-israel.json';
+  const LS_WEIGHTS = 'cars-il.weights';
+  const LS_ASSUMPTIONS = 'cars-il.assumptions';
+  const LS_THEME = 'cars-il.theme';
+
+  const HORIZON = 5;
 
   const state = {
-    meta: {},
-    criteria: [],
-    cars: [],
-    weights: {},
-    filters: { search: '', budget: null, body: new Set(), fuel: new Set(), status: new Set() },
+    meta: {}, criteria: [], cars: [], quoteOnly: [], dealers: {}, dealerNote: '', images: {},
+    sources: [], limitations: [], timeline: [],
+    weights: {}, assumptions: {},
+    filters: { search: '', budget: null, body: new Set(), powertrain: new Set(), make: new Set() },
     sort: 'score'
   };
 
   const $ = (sel) => document.querySelector(sel);
+  const el = (tag, cls, html) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (html != null) node.innerHTML = html;
+    return node;
+  };
+  const esc = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  /* ---------- theme ---------- */
+  /* ------------------------------------------------------------------
+     Assumption sliders that drive the live cost model
+     ------------------------------------------------------------------ */
 
-  function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem(LS_THEME, theme); } catch (_) {}
+  const ASSUMPTION_DEFS = [
+    { key: 'kmPerYear',        label: 'Kilometres per year',        min: 5000, max: 40000, step: 1000,   format: (v) => v.toLocaleString('en-US') + ' km' },
+    { key: 'petrolPrice',      label: 'Petrol (95)',                min: 5,    max: 12,    step: 0.01,   format: (v) => '₪' + v.toFixed(2) + '/L' },
+    { key: 'electricityPrice', label: 'Home electricity',           min: 0.2,  max: 1.5,   step: 0.0001, format: (v) => '₪' + v.toFixed(4) + '/kWh' },
+    { key: 'phevEvShare',      label: 'PHEV driven on electricity', min: 0,    max: 1,     step: 0.05,   format: (v) => Math.round(v * 100) + '%' }
+  ];
+
+  /* ------------------------------------------------------------------
+     Cost model
+     ------------------------------------------------------------------ */
+
+  function energyCost(car, a) {
+    const totalKm = a.kmPerYear * HORIZON;
+    const f = car.fuel || {};
+    if (f.kwh100 != null) {
+      const evKm = totalKm * a.phevEvShare;
+      const petrolKm = totalKm - evKm;
+      return (evKm / 100) * f.kwh100 * a.electricityPrice
+           + (petrolKm / 100) * f.l100 * a.petrolPrice;
+    }
+    if (f.l100 == null) return null;
+    return (totalKm / 100) * f.l100 * a.petrolPrice;
   }
 
-  function initTheme() {
-    let saved = null;
-    try { saved = localStorage.getItem(LS_THEME); } catch (_) {}
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-    $('#theme-toggle').addEventListener('click', () => {
-      applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  function midDiscount(car) {
+    const d = car.discountTarget;
+    return Array.isArray(d) && d.length === 2 ? (d[0] + d[1]) / 2 : 0;
+  }
+
+  // Resale is set by the market, not by your invoice, so a negotiated
+  // discount reduces economic cost roughly shekel-for-shekel.
+  function computeDerived(car, a) {
+    const discount = a.applyDiscount ? midDiscount(car) : 0;
+    const paid = car.msrp - discount;
+    const residualValue = car.msrp * car.residual;
+    const depreciation = paid - residualValue;
+    const energy5 = energyCost(car, a);
+    const tco5 = depreciation + car.fees5 + car.insurance5 + (energy5 || 0) + car.maint5;
+
+    return Object.assign({}, car, {
+      discount, residualValue, depreciation, energy5, tco5,
+      acquisition: paid + car.registration,
+      costParts: [
+        { label: 'Depreciation', value: depreciation },
+        { label: 'Registration & fees', value: car.fees5 },
+        { label: 'Insurance', value: car.insurance5 },
+        { label: 'Energy', value: energy5 || 0 },
+        { label: 'Maintenance', value: car.maint5 }
+      ]
     });
   }
 
-  /* ---------- formatting ---------- */
+  /* ------------------------------------------------------------------
+     Scoring: min-max normalise across the visible set, then weighted mean
+     ------------------------------------------------------------------ */
 
-  function formatValue(value, criterion) {
-    if (value == null || Number.isNaN(value)) return '—';
-    const unit = criterion.unit || '';
-    if (unit === '$' || unit === '$/yr') {
-      const money = (state.meta.currency || '$') + Math.round(value).toLocaleString('en-US');
-      return unit === '$/yr' ? money + '/yr' : money;
-    }
-    if (unit === '/10') return value.toFixed(1);
-    const rounded = Number.isInteger(value) ? value : Math.round(value * 10) / 10;
-    return rounded.toLocaleString('en-US') + (unit ? ' ' + unit : '');
-  }
-
-  function money(value) {
-    return (state.meta.currency || '$') + Math.round(value).toLocaleString('en-US');
-  }
-
-  /* ---------- scoring ---------- */
-
-  // Min-max normalise each criterion across the cars currently in view, flip
-  // direction for "lower is better", then take the weighted mean.
   function scoreCars(cars) {
     const ranges = {};
     state.criteria.forEach((c) => {
-      const values = cars.map((car) => car[c.key]).filter((v) => typeof v === 'number' && !Number.isNaN(v));
-      ranges[c.key] = values.length ? { min: Math.min(...values), max: Math.max(...values) } : null;
+      const vals = cars.map((car) => car[c.key]).filter((v) => typeof v === 'number' && isFinite(v));
+      ranges[c.key] = vals.length ? { min: Math.min(...vals), max: Math.max(...vals) } : null;
     });
 
     return cars.map((car) => {
       const parts = [];
-      let weighted = 0;
-      let totalWeight = 0;
+      let weighted = 0, totalWeight = 0;
 
       state.criteria.forEach((c) => {
         const weight = state.weights[c.key] ?? 0;
         const range = ranges[c.key];
         const raw = car[c.key];
-        if (range == null || typeof raw !== 'number' || Number.isNaN(raw)) return;
+        if (!range || typeof raw !== 'number' || !isFinite(raw)) return;
 
         const span = range.max - range.min;
         let norm = span === 0 ? 1 : (raw - range.min) / span;
@@ -78,68 +109,123 @@
         const points = norm * 100;
 
         parts.push({ key: c.key, label: c.label, points, weight });
-        if (weight > 0) {
-          weighted += points * weight;
-          totalWeight += weight;
-        }
+        if (weight > 0) { weighted += points * weight; totalWeight += weight; }
       });
 
-      const score = totalWeight > 0 ? weighted / totalWeight : 0;
-      return Object.assign({}, car, { _score: score, _parts: parts });
+      return Object.assign({}, car, {
+        score: totalWeight > 0 ? weighted / totalWeight : 0,
+        scoreParts: parts
+      });
     });
   }
 
-  /* ---------- filtering ---------- */
+  /* ------------------------------------------------------------------
+     Formatting
+     ------------------------------------------------------------------ */
+
+  const cur = () => state.meta.currency || '₪';
+  const money = (v) => (v == null || !isFinite(v)) ? '—' : cur() + Math.round(v).toLocaleString('en-US');
+  const moneyK = (v) => (v == null || !isFinite(v)) ? '—' : cur() + (Math.round(v / 100) / 10).toFixed(1) + 'k';
+
+  function fmt(value, criterion) {
+    if (value == null || !isFinite(value)) return '—';
+    switch (criterion.format) {
+      case 'currency': return money(value);
+      case 'percent':  return Math.round(value * 100) + '%';
+      case 'score':    return value.toFixed(1);
+      case 'l100':     return value.toFixed(1);
+      case 'litres':   return Math.round(value).toLocaleString('en-US') + ' L';
+      case 'hp':       return Math.round(value) + ' hp';
+      default:         return String(value);
+    }
+  }
+
+  const isEstimated = (car, key) => Array.isArray(car.estimates) && car.estimates.includes(key);
+
+  function cellValue(car, criterion) {
+    const text = fmt(car[criterion.key], criterion);
+    if (text === '—') {
+      return '<span class="est" title="Not published in the retrieved source — left blank rather than invented">—</span>';
+    }
+    if (isEstimated(car, criterion.key)) {
+      return `<span class="est" title="Estimated — not published as an official figure">${text}</span>`;
+    }
+    return text;
+  }
+
+  /* ------------------------------------------------------------------
+     Filtering & sorting
+     ------------------------------------------------------------------ */
 
   function applyFilters(cars) {
-    const { search, budget, body, fuel, status } = state.filters;
+    const { search, budget, body, powertrain, make } = state.filters;
     const needle = search.trim().toLowerCase();
 
     return cars.filter((car) => {
-      if (budget != null && typeof car.price === 'number' && car.price > budget) return false;
+      if (budget != null && car.acquisition > budget) return false;
       if (body.size && !body.has(car.body)) return false;
-      if (fuel.size && !fuel.has(car.fuel)) return false;
-      if (status.size && !status.has(car.status)) return false;
+      if (powertrain.size && !powertrain.has(car.powertrain)) return false;
+      if (make.size && !make.has(car.make)) return false;
       if (needle) {
-        const haystack = [car.make, car.model, car.body, car.fuel, car.notes]
+        const hay = [car.make, car.model, car.body, car.powertrain, car.notes, car.bestFor]
           .filter(Boolean).join(' ').toLowerCase();
-        if (!haystack.includes(needle)) return false;
+        if (!hay.includes(needle)) return false;
       }
       return true;
     });
   }
 
-  function sortCars(cars) {
-    const sorted = cars.slice();
-    switch (state.sort) {
-      case 'price': sorted.sort((a, b) => a.price - b.price); break;
-      case 'running': sorted.sort((a, b) => a.running - b.running); break;
-      case 'reliability': sorted.sort((a, b) => b.reliability - a.reliability); break;
-      case 'name': sorted.sort((a, b) => (a.make + a.model).localeCompare(b.make + b.model)); break;
-      default: sorted.sort((a, b) => b._score - a._score);
-    }
-    return sorted;
+  // Missing values always sink to the bottom, whichever way we're sorting.
+  function byNumber(key, dir) {
+    return (a, b) => {
+      const av = a[key], bv = b[key];
+      const aBad = av == null || !isFinite(av);
+      const bBad = bv == null || !isFinite(bv);
+      if (aBad && bBad) return 0;
+      if (aBad) return 1;
+      if (bBad) return -1;
+      return dir === 'desc' ? bv - av : av - bv;
+    };
   }
 
-  /* ---------- rendering ---------- */
+  function sortCars(cars) {
+    const out = cars.slice();
+    switch (state.sort) {
+      case 'tco5':        out.sort(byNumber('tco5', 'asc')); break;
+      case 'acquisition': out.sort(byNumber('acquisition', 'asc')); break;
+      case 'consumption': out.sort(byNumber('consumption', 'asc')); break;
+      case 'cargo':       out.sort(byNumber('cargo', 'desc')); break;
+      case 'name':        out.sort((a, b) => (a.make + a.model).localeCompare(b.make + b.model)); break;
+      default:            out.sort(byNumber('score', 'desc'));
+    }
+    return out;
+  }
+
+  /* ------------------------------------------------------------------
+     Controls
+     ------------------------------------------------------------------ */
+
+  const saveWeights = () => { try { localStorage.setItem(LS_WEIGHTS, JSON.stringify(state.weights)); } catch (_) {} };
+  const saveAssumptions = () => { try { localStorage.setItem(LS_ASSUMPTIONS, JSON.stringify(state.assumptions)); } catch (_) {} };
 
   function renderWeights() {
     const host = $('#weights');
     host.innerHTML = '';
     state.criteria.forEach((c) => {
-      const weight = state.weights[c.key] ?? 0;
-      const row = document.createElement('div');
-      row.className = 'weight-row' + (weight === 0 ? ' off' : '');
+      const w = state.weights[c.key] ?? 0;
+      const row = el('div', 'slider-row' + (w === 0 ? ' off' : ''));
       row.innerHTML = `
-        <div class="weight-head">
-          <label for="w-${c.key}" title="${c.hint || ''}">${c.label}</label>
-          <b>${weight}</b>
+        <div class="slider-head">
+          <label for="w-${c.key}" title="${esc(c.hint)}">${esc(c.label)}</label>
+          <b>${w}</b>
         </div>
-        <input type="range" id="w-${c.key}" min="0" max="10" step="1" value="${weight}">`;
+        <input type="range" id="w-${c.key}" min="0" max="10" step="1" value="${w}"
+               aria-label="${esc(c.label)} importance">`;
       row.querySelector('input').addEventListener('input', (e) => {
-        state.weights[c.key] = Number(e.target.value);
-        row.querySelector('b').textContent = e.target.value;
-        row.classList.toggle('off', Number(e.target.value) === 0);
+        const v = Number(e.target.value);
+        state.weights[c.key] = v;
+        row.querySelector('b').textContent = v;
+        row.classList.toggle('off', v === 0);
         saveWeights();
         render();
       });
@@ -147,17 +233,35 @@
     });
   }
 
-  function saveWeights() {
-    try { localStorage.setItem(LS_WEIGHTS, JSON.stringify(state.weights)); } catch (_) {}
+  function renderAssumptions() {
+    const host = $('#assumptions');
+    host.innerHTML = '';
+    ASSUMPTION_DEFS.forEach((def) => {
+      const note = (state.meta.assumptionNotes || {})[def.key] || '';
+      const row = el('div', 'slider-row');
+      row.innerHTML = `
+        <div class="slider-head">
+          <label for="a-${def.key}" title="${esc(note)}">${esc(def.label)}</label>
+          <b>${def.format(state.assumptions[def.key])}</b>
+        </div>
+        <input type="range" id="a-${def.key}" min="${def.min}" max="${def.max}" step="${def.step}"
+               value="${state.assumptions[def.key]}" aria-label="${esc(def.label)}">`;
+      row.querySelector('input').addEventListener('input', (e) => {
+        state.assumptions[def.key] = Number(e.target.value);
+        row.querySelector('b').textContent = def.format(state.assumptions[def.key]);
+        saveAssumptions();
+        render();
+      });
+      host.appendChild(row);
+    });
   }
 
-  function renderChipGroup(hostSel, values, set) {
+  function renderChips(hostSel, values, set) {
     const host = $(hostSel);
     host.innerHTML = '';
     values.forEach((value) => {
-      const btn = document.createElement('button');
+      const btn = el('button', 'chip');
       btn.type = 'button';
-      btn.className = 'chip';
       btn.textContent = value;
       btn.setAttribute('aria-pressed', set.has(value) ? 'true' : 'false');
       btn.addEventListener('click', () => {
@@ -169,12 +273,14 @@
     });
   }
 
+  /* ------------------------------------------------------------------
+     Output
+     ------------------------------------------------------------------ */
+
   function renderTableHead() {
     const cols = state.criteria.slice(0, 6);
-    $('#cars-head').innerHTML = '<tr>' +
-      '<th>Car</th><th>Score</th>' +
-      cols.map((c) => `<th title="${c.hint || ''}">${c.label}</th>`).join('') +
-      '<th>Status</th></tr>';
+    $('#cars-head').innerHTML = '<tr><th>Car</th><th>Match</th>' +
+      cols.map((c) => `<th title="${esc(c.hint)}">${esc(c.short || c.label)}</th>`).join('') + '</tr>';
   }
 
   function renderTable(cars) {
@@ -183,33 +289,30 @@
     body.innerHTML = '';
 
     if (!cars.length) {
-      body.innerHTML = `<tr><td class="empty" colspan="${cols.length + 3}">No cars match these filters.</td></tr>`;
+      body.innerHTML = `<tr><td class="empty" colspan="${cols.length + 2}">No cars match these filters.</td></tr>`;
       return;
     }
 
-    cars.forEach((car, index) => {
-      const tr = document.createElement('tr');
-      if (car.status === 'rejected') tr.classList.add('rejected');
+    cars.forEach((car, i) => {
+      const tr = el('tr');
       tr.tabIndex = 0;
       tr.innerHTML = `
         <td>
           <div class="car-cell">
-            <span class="rank">${index + 1}</span>
-            <span>
-              <span class="car-name">${car.make} ${car.model}</span><br>
-              <span class="car-sub">${car.year} · ${car.body} · ${car.fuel}</span>
+            <span class="rank">${i + 1}</span>
+            <span class="car-id">
+              <span class="car-name">${esc(car.make)} ${esc(car.model)}</span>
+              <span class="car-sub">${esc(car.body)} · ${esc(car.powertrain)} · ${car.seats} seats</span>
             </span>
           </div>
         </td>
         <td>
           <div class="score-cell">
-            <span class="score-num">${car._score.toFixed(0)}</span>
-            <span class="bar"><i style="width:${Math.max(2, car._score).toFixed(1)}%"></i></span>
+            <span class="score-num">${car.score.toFixed(0)}</span>
+            <span class="bar"><i style="width:${Math.max(2, car.score).toFixed(1)}%"></i></span>
           </div>
         </td>
-        ${cols.map((c) => `<td>${formatValue(car[c.key], c)}</td>`).join('')}
-        <td><span class="tag ${car.status || ''}">${car.status || '—'}</span></td>`;
-
+        ${cols.map((c) => `<td>${cellValue(car, c)}</td>`).join('')}`;
       const open = () => openDialog(car);
       tr.addEventListener('click', open);
       tr.addEventListener('keydown', (e) => {
@@ -219,157 +322,352 @@
     });
   }
 
-  function renderVerdict(ranked) {
-    const host = $('#verdict');
-    if (!ranked.length) {
-      host.innerHTML = '<p class="muted">Nothing passes the current filters — loosen them to get a recommendation.</p>';
+  function renderVerdict(scored) {
+    const host = $('#verdict-cards');
+    if (!scored.length) {
+      host.innerHTML = '<p class="muted small">Nothing passes the current filters.</p>';
       return;
     }
-    const byScore = ranked.slice().sort((a, b) => b._score - a._score).slice(0, 3);
-    host.innerHTML = byScore.map((car, i) => {
-      const best = car._parts.filter((p) => p.weight > 0).sort((a, b) => b.points - a.points)[0];
+    host.innerHTML = scored.slice().sort(byNumber('score', 'desc')).slice(0, 3).map((car, i) => `
+      <div class="verdict-card ${i === 0 ? 'top' : ''}">
+        <div class="verdict-rank">${i === 0 ? 'Best match' : '#' + (i + 1)}</div>
+        <div class="verdict-name">${esc(car.make)} ${esc(car.model)}</div>
+        <div class="verdict-score">${car.score.toFixed(0)}<span class="of">/100</span></div>
+        <div class="verdict-meta">${money(car.acquisition)} cash · ${moneyK(car.tco5)} over 5 yr</div>
+      </div>`).join('');
+  }
+
+  function dealerBlock(car, compact) {
+    const brand = state.dealers[car.make];
+    if (!brand) {
+      return `<p class="muted small">Haifa-area showrooms for ${esc(car.make)} were not part of the verified dealer research — check the importer's own site.</p>`;
+    }
+    if (!Array.isArray(brand.showrooms) || !brand.showrooms.length) {
+      return `<p class="muted small">
+        No Haifa-area address could be verified from ${esc(car.make)}'s official site, so none is listed here rather than guessed.
+        ${brand.branchesUrl ? `<a href="${esc(brand.branchesUrl)}" target="_blank" rel="noopener">Dealer locator ↗</a>` : ''}
+        ${brand.testDriveUrl ? ` · <a href="${esc(brand.testDriveUrl)}" target="_blank" rel="noopener">Book a test drive ↗</a>` : ''}
+      </p>`;
+    }
+    const shown = compact ? brand.showrooms.slice(0, 2) : brand.showrooms;
+    const list = shown.map((s) => `
+      <li>
+        <div class="dealer-top">
+          <strong>${esc(s.name)}</strong>
+          ${s.kind ? `<span class="pill ${s.kind.toLowerCase().includes('service') && !s.kind.toLowerCase().includes('sales') ? 'pill-warn' : ''}">${esc(s.kind)}</span>` : ''}
+        </div>
+        <span class="addr">${esc(s.address)}</span>
+        ${s.addressHe ? `<span class="addr he" dir="rtl" lang="he">${esc(s.addressHe)}</span>` : ''}
+        ${s.hours ? `<span class="addr">${esc(s.hours)}</span>` : ''}
+        <span class="dealer-links">
+          ${s.phone ? `<a href="tel:${esc(s.phone.replace(/[^+\d]/g, ''))}">${esc(s.phone)}</a>` : ''}
+          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.mapQuery || s.address)}" target="_blank" rel="noopener">Map ↗</a>
+        </span>
+      </li>`).join('');
+
+    const more = compact && brand.showrooms.length > shown.length
+      ? `<li class="muted more">+ ${brand.showrooms.length - shown.length} more in the detail view</li>` : '';
+
+    return `
+      <ul class="dealers">${list}${more}</ul>
+      <p class="dealer-foot muted">
+        ${brand.importer ? `Imported by ${esc(brand.importer)}. ` : ''}
+        ${brand.branchesUrl ? `<a href="${esc(brand.branchesUrl)}" target="_blank" rel="noopener">All branches ↗</a>` : ''}
+        ${brand.testDriveUrl ? ` · <a href="${esc(brand.testDriveUrl)}" target="_blank" rel="noopener">Book a test drive ↗</a>` : ''}
+      </p>`;
+  }
+
+  function renderPicks(scored) {
+    const host = $('#pick-cards');
+    const top = scored.slice().sort(byNumber('score', 'desc')).slice(0, 6);
+    if (!top.length) { host.innerHTML = '<p class="muted">No cars match these filters.</p>'; return; }
+
+    host.innerHTML = top.map((car, i) => {
+      const img = state.images[car.id];
+      const media = img
+        ? `<img src="${esc(img.src)}" alt="${esc(car.make)} ${esc(car.model)}" loading="lazy">`
+        : `<div class="no-photo"><span>${esc(car.make)}</span><span>${esc(car.model)}</span></div>`;
+
       return `
-        <div class="verdict-card ${i === 0 ? 'top' : ''}">
-          <div class="verdict-rank">${i === 0 ? 'Best match' : 'Runner-up ' + i}</div>
-          <div class="verdict-name">${car.make} ${car.model}</div>
-          <div class="verdict-score">${car._score.toFixed(0)}<span class="muted" style="font-size:14px;font-weight:400">/100</span></div>
-          <div class="verdict-meta">${money(car.price)} · strongest on ${best ? best.label.toLowerCase() : 'n/a'}</div>
-        </div>`;
+        <article class="pick-card">
+          <div class="pick-media">
+            ${media}
+            <span class="pick-rank">#${i + 1}</span>
+            <span class="pick-score" title="Match score under your current priorities">${car.score.toFixed(0)}</span>
+          </div>
+          <div class="pick-body">
+            <h3>${esc(car.make)} ${esc(car.model)}</h3>
+            <p class="pick-sub muted small">${esc(car.body)} · ${esc(car.powertrain)} · ${car.seats} seats${car.evRange ? ` · ${car.evRange} km EV` : ''}</p>
+
+            <div class="pick-stats">
+              <div><span>Cash price</span><b>${money(car.acquisition)}</b></div>
+              <div><span>5-year cost</span><b>${moneyK(car.tco5)}</b></div>
+              <div><span>Energy / 5 yr</span><b>${moneyK(car.energy5)}</b></div>
+            </div>
+
+            <p class="small pick-for">${esc(car.bestFor || '')}</p>
+
+            <div class="pick-links">
+              <a class="btn btn-primary" href="${esc(car.link)}" target="_blank" rel="noopener">Official page ↗</a>
+              <button class="btn" type="button" data-car="${esc(car.id)}">Full breakdown</button>
+            </div>
+
+            <details class="pick-dealers">
+              <summary>Where to see it — Haifa area</summary>
+              ${dealerBlock(car, true)}
+            </details>
+          </div>
+        </article>`;
     }).join('');
+
+    host.querySelectorAll('button[data-car]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const car = scored.find((c) => c.id === btn.dataset.car);
+        if (car) openDialog(car);
+      });
+    });
   }
 
   function openDialog(car) {
-    const dialog = $('#car-dialog');
-    const contributions = car._parts
-      .filter((p) => p.weight > 0)
-      .sort((a, b) => (b.points * b.weight) - (a.points * a.weight));
+    const img = state.images[car.id];
+    const maxPart = Math.max(...car.costParts.map((p) => p.value));
+    const strengths = car.scoreParts.filter((p) => p.weight > 0).sort((a, b) => b.points - a.points);
 
     $('#car-dialog-content').innerHTML = `
-      <h3>${car.make} ${car.model}</h3>
-      <p class="muted small">${car.year} · ${car.body} · ${car.fuel} · ${car.drivetrain || ''} · ${car.seats || '?'} seats</p>
+      ${img ? `<img class="dialog-photo" src="${esc(img.src)}" alt="${esc(car.make)} ${esc(car.model)}">` : ''}
+      <h3>${esc(car.make)} ${esc(car.model)}</h3>
+      <p class="muted small">${esc(car.drivetrain || '')}</p>
+
       <div class="dialog-grid">
         ${state.criteria.map((c) => `
-          <div class="dialog-stat"><span>${c.label}</span><b>${formatValue(car[c.key], c)}</b></div>`).join('')}
+          <div class="dialog-stat"><span>${esc(c.label)}</span><b>${cellValue(car, c)}</b></div>`).join('')}
       </div>
+
+      <h4 class="block-title">Five-year cost — ${money(car.tco5)}</h4>
+      <div class="cost-bars">
+        ${car.costParts.map((p) => `
+          <div class="cost-row">
+            <span class="cost-label">${esc(p.label)}</span>
+            <span class="cost-bar"><i style="width:${maxPart ? (p.value / maxPart * 100).toFixed(1) : 0}%"></i></span>
+            <span class="cost-val">${money(p.value)}</span>
+          </div>`).join('')}
+      </div>
+      <p class="muted small">
+        Cash required: <b>${money(car.acquisition)}</b> — MSRP ${money(car.msrp)} + ${money(car.registration)} registration${car.discount ? `, less ${money(car.discount)} negotiated` : ''}.
+        Modeled value after five years: ${money(car.residualValue)} (${Math.round(car.residual * 100)}% of list).
+      </p>
+
       <div class="pros-cons">
-        <div class="pros"><h4>Pros</h4><ul>${(car.pros || []).map((p) => `<li>${p}</li>`).join('') || '<li class="muted">—</li>'}</ul></div>
-        <div class="cons"><h4>Cons</h4><ul>${(car.cons || []).map((p) => `<li>${p}</li>`).join('') || '<li class="muted">—</li>'}</ul></div>
+        <div class="pros"><h4>Pros</h4><ul>${(car.pros || []).map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>
+        <div class="cons"><h4>Cons</h4><ul>${(car.cons || []).map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>
       </div>
-      ${car.notes ? `<p class="small" style="margin-top:14px">${car.notes}</p>` : ''}
-      <p class="muted small">Scores best on: ${contributions.slice(0, 3).map((p) => p.label.toLowerCase()).join(', ') || 'nothing weighted'}.
-      ${car.link ? ` · <a href="${car.link}" target="_blank" rel="noopener">Official site</a>` : ''}</p>`;
-    dialog.showModal();
+
+      ${car.notes ? `<p class="small note-block">${esc(car.notes)}</p>` : ''}
+
+      <dl class="facts">
+        ${car.trims ? `<dt>Trims</dt><dd>${esc(car.trims)}</dd>` : ''}
+        ${car.consumptionBasis ? `<dt>Economy basis</dt><dd>${esc(car.consumptionBasis)}</dd>` : ''}
+        ${car.safetyBasis ? `<dt>Safety basis</dt><dd>${esc(car.safetyBasis)}</dd>` : ''}
+        ${car.cargoMax ? `<dt>Cargo, seats folded</dt><dd>${car.cargoMax.toLocaleString('en-US')} L</dd>` : ''}
+        ${car.battery ? `<dt>Battery</dt><dd>${esc(car.battery)}</dd>` : ''}
+        ${car.warranty ? `<dt>Warranty</dt><dd>${esc(car.warranty)}</dd>` : ''}
+        ${car.discountTarget ? `<dt>Negotiation target</dt><dd>${money(car.discountTarget[0])}–${money(car.discountTarget[1])} combined across cash, accessories, trade-in uplift, service or subsidised finance</dd>` : ''}
+      </dl>
+
+      <h4 class="block-title">Against your priorities</h4>
+      <p class="small muted">Strongest on ${strengths.slice(0, 3).map((p) => esc(p.label.toLowerCase())).join(', ') || 'nothing weighted'}${strengths.length ? `; weakest on ${esc(strengths[strengths.length - 1].label.toLowerCase())}` : ''}.</p>
+
+      <h4 class="block-title">Where to see it — Haifa area</h4>
+      ${dealerBlock(car, false)}
+
+      <p class="small"><a href="${esc(car.link)}" target="_blank" rel="noopener">Official Israeli model page ↗</a></p>
+      ${img ? `<p class="muted tiny">Photo: ${esc(img.credit)}, ${esc(img.license)} — <a href="${esc(img.source)}" target="_blank" rel="noopener">source</a>. Illustrative of the model generation, not the Israeli trim.</p>` : ''}`;
+
+    $('#car-dialog').showModal();
   }
+
+  function renderQuoteOnly() {
+    $('#quote-only').innerHTML = state.quoteOnly.map((car) => `
+      <div class="quote-card">
+        <h4>${esc(car.make)} ${esc(car.model)} <span class="pill">${esc(car.powertrain)}</span></h4>
+        <p class="small muted">${esc(car.reason)}</p>
+        <p class="small">${esc(car.notes)}</p>
+        <p class="small"><strong>Warranty:</strong> ${esc(car.warranty)}</p>
+        ${dealerBlock(car, true)}
+        <p class="small"><a href="${esc(car.link)}" target="_blank" rel="noopener">Official page ↗</a></p>
+      </div>`).join('');
+  }
+
+  function renderStatic() {
+    const m = state.meta;
+    const v = m.verdict || {};
+    document.title = m.title || document.title;
+    $('#site-title').textContent = m.title || '';
+    $('#site-subtitle').textContent = m.subtitle || '';
+    $('#updated').textContent = m.updated || '';
+    $('#verdict-headline').textContent = v.headline || '';
+    $('#verdict-text').textContent = v.text || '';
+    $('#verdict-hierarchy').innerHTML = (v.hierarchy || []).map((h) => `<li>${esc(h)}</li>`).join('');
+
+    $('#dealer-note').textContent = state.dealerNote || '';
+    $('#limitations').innerHTML = state.limitations.map((l) => `<li>${esc(l)}</li>`).join('');    $('#sources').innerHTML = state.sources
+      .map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a></li>`).join('');
+    $('#credits').innerHTML = Object.values(state.images)
+      .map((i) => `<li>${esc(i.caption)} — ${esc(i.credit)}, <a href="${esc(i.source)}" target="_blank" rel="noopener">${esc(i.license)}</a></li>`).join('');
+
+    $('#timeline').innerHTML = state.timeline.map((t) => `
+      <div class="timeline-step">
+        <div class="timeline-when">${esc(t.when)}</div>
+        <h4>${esc(t.phase)}</h4>
+        <ul>${t.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      </div>`).join('');
+  }
+
+  /* ------------------------------------------------------------------
+     Main render pass
+     ------------------------------------------------------------------ */
 
   function render() {
-    const filtered = applyFilters(state.cars);
-    const scored = scoreCars(filtered);
-    const sorted = sortCars(scored);
+    const derived = state.cars.map((car) => computeDerived(car, state.assumptions));
+    const scored = scoreCars(applyFilters(derived));
 
     renderVerdict(scored);
-    renderTable(sorted);
-    $('#result-count').textContent =
-      `${sorted.length} of ${state.cars.length} cars shown`;
+    renderPicks(scored);
+    renderTable(sortCars(scored));
+    $('#result-count').textContent = `${scored.length} of ${state.cars.length} modeled cars shown`;
   }
 
-  /* ---------- setup ---------- */
+  /* ------------------------------------------------------------------
+     Setup
+     ------------------------------------------------------------------ */
 
-  function uniqueValues(key) {
-    return [...new Set(state.cars.map((c) => c[key]).filter(Boolean))].sort();
-  }
+  const uniques = (key) => [...new Set(state.cars.map((c) => c[key]).filter(Boolean))].sort();
 
   function defaultWeights() {
-    const weights = {};
-    state.criteria.forEach((c) => { weights[c.key] = c.defaultWeight ?? 5; });
-    return weights;
+    const w = {};
+    state.criteria.forEach((c) => { w[c.key] = c.defaultWeight ?? 5; });
+    return w;
+  }
+  const defaultAssumptions = () => Object.assign({}, state.meta.assumptions);
+
+  function syncBudgetControl() {
+    const prices = state.cars.map((c) => computeDerived(c, state.assumptions).acquisition);
+    const lo = Math.floor(Math.min(...prices) / 5000) * 5000;
+    const hi = Math.ceil(Math.max(...prices) / 5000) * 5000;
+    const budget = $('#budget');
+    budget.min = lo; budget.max = hi; budget.step = 1000; budget.value = hi;
+    state.filters.budget = hi;
+    $('#budget-value').textContent = money(hi);
   }
 
   function bindControls() {
-    $('#search').addEventListener('input', (e) => {
-      state.filters.search = e.target.value;
-      render();
-    });
+    $('#search').addEventListener('input', (e) => { state.filters.search = e.target.value; render(); });
 
-    const prices = state.cars.map((c) => c.price).filter((p) => typeof p === 'number');
-    const maxPrice = Math.ceil((Math.max(...prices) * 1.1) / 1000) * 1000;
-    const budget = $('#budget');
-    budget.min = Math.floor(Math.min(...prices) / 1000) * 1000;
-    budget.max = maxPrice;
-    budget.value = maxPrice;
-    state.filters.budget = maxPrice;
-    $('#budget-value').textContent = money(maxPrice);
-    budget.addEventListener('input', (e) => {
+    syncBudgetControl();
+    $('#budget').addEventListener('input', (e) => {
       state.filters.budget = Number(e.target.value);
       $('#budget-value').textContent = money(state.filters.budget);
       render();
     });
 
-    renderChipGroup('#filter-body', uniqueValues('body'), state.filters.body);
-    renderChipGroup('#filter-fuel', uniqueValues('fuel'), state.filters.fuel);
-    renderChipGroup('#filter-status', uniqueValues('status'), state.filters.status);
+    const refreshChips = () => {
+      renderChips('#filter-body', uniques('body'), state.filters.body);
+      renderChips('#filter-powertrain', uniques('powertrain'), state.filters.powertrain);
+      renderChips('#filter-make', uniques('make'), state.filters.make);
+    };
+    refreshChips();
 
-    $('#sort').addEventListener('change', (e) => {
-      state.sort = e.target.value;
+    $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });
+
+    $('#apply-discount').checked = !!state.assumptions.applyDiscount;
+    $('#apply-discount').addEventListener('change', (e) => {
+      state.assumptions.applyDiscount = e.target.checked;
+      saveAssumptions();
       render();
     });
 
     $('#reset-weights').addEventListener('click', () => {
       state.weights = defaultWeights();
-      saveWeights();
-      renderWeights();
-      render();
+      saveWeights(); renderWeights(); render();
+    });
+
+    $('#reset-assumptions').addEventListener('click', () => {
+      state.assumptions = defaultAssumptions();
+      saveAssumptions();
+      $('#apply-discount').checked = !!state.assumptions.applyDiscount;
+      renderAssumptions(); render();
     });
 
     $('#reset-filters').addEventListener('click', () => {
       state.filters.search = '';
       $('#search').value = '';
       state.filters.body.clear();
-      state.filters.fuel.clear();
-      state.filters.status.clear();
-      budget.value = budget.max;
-      state.filters.budget = Number(budget.max);
-      $('#budget-value').textContent = money(state.filters.budget);
-      renderChipGroup('#filter-body', uniqueValues('body'), state.filters.body);
-      renderChipGroup('#filter-fuel', uniqueValues('fuel'), state.filters.fuel);
-      renderChipGroup('#filter-status', uniqueValues('status'), state.filters.status);
+      state.filters.powertrain.clear();
+      state.filters.make.clear();
+      syncBudgetControl();
+      refreshChips();
       render();
     });
+  }
+
+  function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(LS_THEME); } catch (_) {}
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = saved || (dark ? 'dark' : 'light');
+    $('#theme-toggle').addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem(LS_THEME, next); } catch (_) {}
+    });
+  }
+
+  function restore(key, base) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || 'null');
+      if (saved) {
+        Object.keys(base).forEach((k) => {
+          if (saved[k] != null && typeof saved[k] === typeof base[k]) base[k] = saved[k];
+        });
+      }
+    } catch (_) {}
+    return base;
   }
 
   async function init() {
     initTheme();
     try {
-      const res = await fetch('data/cars.json', { cache: 'no-store' });
+      const res = await fetch(DATA_URL, { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
 
-      state.meta = data.meta || {};
-      state.criteria = data.criteria || [];
-      state.cars = data.cars || [];
+      Object.assign(state, {
+        meta: data.meta || {},
+        criteria: data.criteria || [],
+        cars: data.cars || [],
+        quoteOnly: data.quoteOnly || [],
+        dealers: data.dealers || {},
+        dealerNote: data.dealerNote || '',
+        images: data.images || {},
+        sources: data.sources || [],
+        limitations: data.limitations || [],
+        timeline: data.timeline || []
+      });
 
-      document.title = state.meta.title || document.title;
-      $('#site-title').textContent = state.meta.title || 'Car comparison';
-      $('#site-subtitle').textContent = state.meta.subtitle || '';
-      $('#updated').textContent = state.meta.updated || 'recently';
+      state.weights = restore(LS_WEIGHTS, defaultWeights());
+      state.assumptions = restore(LS_ASSUMPTIONS, defaultAssumptions());
 
-      state.weights = defaultWeights();
-      try {
-        const saved = JSON.parse(localStorage.getItem(LS_WEIGHTS) || 'null');
-        if (saved) {
-          Object.keys(state.weights).forEach((k) => {
-            if (typeof saved[k] === 'number') state.weights[k] = saved[k];
-          });
-        }
-      } catch (_) {}
-
+      renderStatic();
       renderWeights();
+      renderAssumptions();
       renderTableHead();
+      renderQuoteOnly();
       bindControls();
       render();
     } catch (err) {
       $('#cars-body').innerHTML =
-        `<tr><td class="empty">Could not load <code>data/cars.json</code> (${err.message}).<br>
-         Serve this folder over HTTP — opening index.html directly from disk blocks fetch().</td></tr>`;
+        `<tr><td class="empty">Could not load <code>${DATA_URL}</code> (${esc(err.message)}).<br>
+         Serve this folder over HTTP — opening index.html from disk blocks fetch().</td></tr>`;
     }
   }
 
