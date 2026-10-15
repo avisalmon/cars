@@ -28,7 +28,8 @@
         "Compare insurance quotes — before comparing discounts.",
         "Only then negotiate purchase price."
       ]
-    }
+    },
+    "defaultProfile": "research"
   },
   "criteria": [
     {
@@ -1167,5 +1168,86 @@
       "showrooms": []
     }
   },
-  "dealerNote": "Addresses were transcribed from each importer's own website. No Nissan Haifa-area address could be verified — Nissan's dealer locator renders entirely client-side from an API, so nothing is listed rather than guessed. No branch of any of these brands was found in the Krayot, Nesher, Tirat Carmel or Kiryat Tiv'on; the only Haifa-area presence is inside Haifa itself. Phone a branch before travelling — some locations are service only."
+  "dealerNote": "Addresses were transcribed from each importer's own website. No Nissan Haifa-area address could be verified — Nissan's dealer locator renders entirely client-side from an API, so nothing is listed rather than guessed. No branch of any of these brands was found in the Krayot, Nesher, Tirat Carmel or Kiryat Tiv'on; the only Haifa-area presence is inside Haifa itself. Phone a branch before travelling — some locations are service only.",
+  "profiles": [
+    {
+      "id": "research",
+      "label": "Full research ranking",
+      "tagline": "Every model, weighted as the original report did.",
+      "note": "The balanced view the written research argues for: cost matters most, but space, reliability and safety all carry real weight, and the plug-in stays in the running for households that can charge.",
+      "excludePowertrain": [],
+      "weights": {
+        "tco5": 9,
+        "acquisition": 8,
+        "reliability": 9,
+        "safety": 8,
+        "consumption": 6,
+        "cargo": 5,
+        "energy5": 5,
+        "residual": 5,
+        "seats": 2,
+        "power": 2
+      }
+    },
+    {
+      "id": "thrifty-family",
+      "label": "Cost-effective family car, no plug",
+      "tagline": "Lowest running cost and best fuel economy — plug-in hybrids excluded.",
+      "note": "Hyundai Israel sells the Tucson only as a plug-in hybrid, so there is no non-plug-in Tucson to order. If you buy one and never charge it, its five-year cost rises from ₪185,086 to ₪205,191 and it drops from 6th to 9th — you pay to carry a battery you never use. This profile removes plug-ins entirely and weights running cost and fuel economy above everything else.",
+      "excludePowertrain": [
+        "Plug-in hybrid"
+      ],
+      "weights": {
+        "tco5": 10,
+        "acquisition": 8,
+        "reliability": 7,
+        "safety": 6,
+        "consumption": 9,
+        "cargo": 6,
+        "energy5": 8,
+        "residual": 4,
+        "seats": 1,
+        "power": 1
+      }
+    },
+    {
+      "id": "big-boot",
+      "label": "Biggest verified boot",
+      "tagline": "Only cars with a published boot of 550 L or more.",
+      "note": "Weighting cargo heavily is not enough on this data: almost every car here seats five, and the Camry, Santa Fe and CX-90 never had an Israeli boot figure published — so they cannot be ranked on space honestly. This profile therefore filters to cars with a verified boot of at least 550 L. The three cars with no published figure are absent because the number is unknown, not because they are small.",
+      "excludePowertrain": [],
+      "weights": {
+        "tco5": 6,
+        "acquisition": 5,
+        "reliability": 7,
+        "safety": 7,
+        "consumption": 4,
+        "cargo": 10,
+        "energy5": 4,
+        "residual": 3,
+        "seats": 5,
+        "power": 3
+      },
+      "minCargo": 550
+    },
+    {
+      "id": "lowest-cash",
+      "label": "Lowest cash outlay",
+      "tagline": "Smallest cheque on the day, with safety still protected.",
+      "note": "Weighted toward purchase price rather than five-year cost. Watch the residual column — the cheapest car to buy is not always the cheapest to own.",
+      "excludePowertrain": [],
+      "weights": {
+        "tco5": 5,
+        "acquisition": 10,
+        "reliability": 6,
+        "safety": 7,
+        "consumption": 6,
+        "cargo": 4,
+        "energy5": 5,
+        "residual": 2,
+        "seats": 2,
+        "power": 1
+      }
+    }
+  ]
 }

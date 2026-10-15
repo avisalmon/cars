@@ -5,13 +5,14 @@
   const LS_WEIGHTS = 'cars-il.weights';
   const LS_ASSUMPTIONS = 'cars-il.assumptions';
   const LS_THEME = 'cars-il.theme';
+  const LS_PROFILE = 'cars-il.profile';
 
   const HORIZON = 5;
 
   const state = {
     meta: {}, criteria: [], cars: [], quoteOnly: [], dealers: {}, dealerNote: '', images: {},
-    sources: [], limitations: [], timeline: [],
-    weights: {}, assumptions: {},
+    sources: [], limitations: [], timeline: [], profiles: [],
+    weights: {}, assumptions: {}, profile: null, weightsCustom: false,
     filters: { search: '', budget: null, body: new Set(), powertrain: new Set(), make: new Set() },
     sort: 'score'
   };
@@ -157,11 +158,22 @@
      Filtering & sorting
      ------------------------------------------------------------------ */
 
+  function excludedPowertrains() {
+    const p = activeProfile();
+    return new Set(p && Array.isArray(p.excludePowertrain) ? p.excludePowertrain : []);
+  }
+
   function applyFilters(cars) {
     const { search, budget, body, powertrain, make } = state.filters;
     const needle = search.trim().toLowerCase();
+    const excluded = excludedPowertrains();
+    const profile = activeProfile();
+    const minCargo = profile && profile.minCargo != null ? profile.minCargo : null;
 
     return cars.filter((car) => {
+      if (excluded.has(car.powertrain)) return false;
+      // A null cargo figure fails a cargo floor: unknown is not the same as big enough.
+      if (minCargo != null && !(typeof car.cargo === 'number' && car.cargo >= minCargo)) return false;
       if (budget != null && car.acquisition > budget) return false;
       if (body.size && !body.has(car.body)) return false;
       if (powertrain.size && !powertrain.has(car.powertrain)) return false;
@@ -207,6 +219,60 @@
 
   const saveWeights = () => { try { localStorage.setItem(LS_WEIGHTS, JSON.stringify(state.weights)); } catch (_) {} };
   const saveAssumptions = () => { try { localStorage.setItem(LS_ASSUMPTIONS, JSON.stringify(state.assumptions)); } catch (_) {} };
+  const saveProfile = () => { try { localStorage.setItem(LS_PROFILE, state.profile || ''); } catch (_) {} };
+
+  const activeProfile = () => state.profiles.find((p) => p.id === state.profile) || null;
+
+  // A profile owns two separate things: which powertrains are in scope (sticky —
+  // it is the category you chose) and a starting weight mix (freely adjustable).
+  // Nudging a slider must not quietly put an excluded powertrain back in the list.
+  function selectProfile(id) {
+    const profile = state.profiles.find((p) => p.id === id);
+    if (!profile) return;
+    state.profile = id;
+    state.weightsCustom = false;
+    state.weights = Object.assign({}, profile.weights);
+    saveProfile();
+    saveWeights();
+    renderProfiles();
+    renderWeights();
+    render();
+  }
+
+  function renderProfiles() {
+    const host = $('#profiles');
+    if (!host) return;
+    const active = activeProfile();
+
+    host.innerHTML = state.profiles.map((p) => `
+      <button class="profile-btn${p.id === state.profile ? ' active' : ''}" type="button" data-profile="${esc(p.id)}"
+              aria-pressed="${p.id === state.profile ? 'true' : 'false'}">
+        <span class="profile-label">${esc(p.label)}</span>
+        <span class="profile-tagline">${esc(p.tagline)}</span>
+        ${p.excludePowertrain && p.excludePowertrain.length
+          ? `<span class="profile-excl">${esc(p.excludePowertrain.join(', '))} excluded</span>` : ''}
+        ${p.minCargo != null ? `<span class="profile-excl">Needs ${p.minCargo} L+ boot</span>` : ''}
+        ${p.id === state.profile && state.weightsCustom
+          ? '<span class="profile-custom">Weights adjusted — press Reset to restore</span>' : ''}
+      </button>`).join('');
+
+    host.querySelectorAll('button[data-profile]').forEach((btn) => {
+      btn.addEventListener('click', () => selectProfile(btn.dataset.profile));
+    });
+
+    $('#profile-note').textContent = active ? active.note : '';
+    $('#profile-note').hidden = !active;
+  }
+
+  function markCustomWeights() {
+    const p = activeProfile();
+    if (!p) return;
+    const custom = !Object.keys(p.weights).every((k) => (state.weights[k] ?? 0) === p.weights[k]);
+    if (custom !== state.weightsCustom) {
+      state.weightsCustom = custom;
+      renderProfiles();
+    }
+  }
 
   function renderWeights() {
     const host = $('#weights');
@@ -227,6 +293,7 @@
         row.querySelector('b').textContent = v;
         row.classList.toggle('off', v === 0);
         saveWeights();
+        markCustomWeights();
         render();
       });
       host.appendChild(row);
@@ -380,6 +447,13 @@
   function renderPicks(scored) {
     const host = $('#pick-cards');
     const top = scored.slice().sort(byNumber('score', 'desc')).slice(0, 6);
+    const sub = $('#picks-sub');
+    if (sub) {
+      const words = ['', 'single', 'two', 'three', 'four', 'five', 'six'];
+      sub.textContent = top.length
+        ? `The ${words[top.length] || top.length} highest-scoring ${top.length === 1 ? 'car' : 'cars'} under your current priorities — with where to see ${top.length === 1 ? 'it' : 'them'} around Haifa.`
+        : 'No cars match your current priorities.';
+    }
     if (!top.length) { host.innerHTML = '<p class="muted">No cars match these filters.</p>'; return; }
 
     host.innerHTML = top.map((car, i) => {
@@ -530,11 +604,22 @@
   function render() {
     const derived = state.cars.map((car) => computeDerived(car, state.assumptions));
     const scored = scoreCars(applyFilters(derived));
+    const excluded = excludedPowertrains();
 
     renderVerdict(scored);
     renderPicks(scored);
     renderTable(sortCars(scored));
-    $('#result-count').textContent = `${scored.length} of ${state.cars.length} modeled cars shown`;
+
+    const profile = activeProfile();
+    const bits = [];
+    if (excluded.size) bits.push(`${[...excluded].join(', ').toLowerCase()} excluded`);
+    if (profile && profile.minCargo != null) bits.push(`boot under ${profile.minCargo} L or unpublished excluded`);
+    const suffix = bits.length ? ` · ${bits.join(' · ')} by this profile` : '';
+    $('#result-count').textContent = `${scored.length} of ${state.cars.length} modeled cars shown${suffix}`;
+
+    // The charging-share slider only means anything while a plug-in is in play.
+    const phevRow = document.getElementById('a-phevEvShare');
+    if (phevRow) phevRow.closest('.slider-row').classList.toggle('off', excluded.has('Plug-in hybrid'));
   }
 
   /* ------------------------------------------------------------------
@@ -587,6 +672,8 @@
     });
 
     $('#reset-weights').addEventListener('click', () => {
+      const p = activeProfile();
+      if (p) { selectProfile(p.id); return; }
       state.weights = defaultWeights();
       saveWeights(); renderWeights(); render();
     });
@@ -651,13 +738,25 @@
         images: data.images || {},
         sources: data.sources || [],
         limitations: data.limitations || [],
-        timeline: data.timeline || []
+        timeline: data.timeline || [],
+        profiles: data.profiles || []
       });
 
-      state.weights = restore(LS_WEIGHTS, defaultWeights());
+      let savedProfile = null;
+      try { savedProfile = localStorage.getItem(LS_PROFILE); } catch (_) {}
+      const known = state.profiles.some((p) => p.id === savedProfile);
+      state.profile = savedProfile === '' ? null : (known ? savedProfile : (state.meta.defaultProfile || null));
+
+      const start = activeProfile();
+      state.weights = restore(LS_WEIGHTS, start ? Object.assign({}, start.weights) : defaultWeights());
       state.assumptions = restore(LS_ASSUMPTIONS, defaultAssumptions());
+      if (start) {
+        state.weightsCustom = !Object.keys(start.weights)
+          .every((k) => (state.weights[k] ?? 0) === start.weights[k]);
+      }
 
       renderStatic();
+      renderProfiles();
       renderWeights();
       renderAssumptions();
       renderTableHead();

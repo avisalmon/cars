@@ -17,6 +17,7 @@
       <p class="subtitle" id="site-subtitle"></p>
     </div>
     <nav class="header-nav">
+      <a href="#profiles-section">Profiles</a>
       <a href="#picks">Top picks</a>
       <a href="#compare">Compare</a>
       <a href="#method">Method</a>
@@ -39,10 +40,19 @@
     </div>
   </section>
 
+  <section class="wrap section" id="profiles-section">
+    <div class="section-head">
+      <h2>What kind of buyer are you?</h2>
+      <p class="muted small">Pick a starting point. Each one re-weights the ranking — and some remove whole powertrains from consideration.</p>
+    </div>
+    <div id="profiles" class="profile-grid"></div>
+    <p id="profile-note" class="profile-note small" hidden></p>
+  </section>
+
   <section class="wrap section" id="picks">
     <div class="section-head">
       <h2>Top picks right now</h2>
-      <p class="muted small">The six highest-scoring cars under your current priorities — with where to see them around Haifa.</p>
+      <p class="muted small" id="picks-sub">The highest-scoring cars under your current priorities — with where to see them around Haifa.</p>
       <p class="muted small" id="dealer-note"></p>
     </div>
     <div id="pick-cards" class="pick-grid"></div>
@@ -61,7 +71,7 @@
             <h3 class="panel-title">Your priorities</h3>
             <button id="reset-weights" class="link-btn" type="button">Reset</button>
           </div>
-          <p class="muted small nudge">How much does each factor matter? 0 removes it entirely.</p>
+          <p class="muted small nudge">How much does each factor matter? 0 removes it entirely. Moving a slider switches you to a custom mix.</p>
           <div id="weights"></div>
         </section>
 

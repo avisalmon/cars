@@ -165,6 +165,62 @@ a { color: var(--accent); }
 .verdict-meta { font-size: .8rem; color: var(--muted); }
 
 /* ------------------------------------------------------------------
+   Buyer profiles
+   ------------------------------------------------------------------ */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.profile-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  padding: 13px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.profile-btn:hover { border-color: var(--accent); }
+.profile-btn.active { border-color: var(--accent); background: var(--accent-soft); }
+
+.profile-label { font-weight: 650; }
+.profile-tagline { font-size: .82rem; color: var(--muted); }
+.profile-excl {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--warn);
+  margin-top: 2px;
+}
+
+.profile-custom {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+.profile-note {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  max-width: 76ch;
+}
+
+/* ------------------------------------------------------------------
    Pick cards
    ------------------------------------------------------------------ */
 

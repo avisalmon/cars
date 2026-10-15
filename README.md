@@ -9,13 +9,40 @@ Chinese brands are out of scope.
 
 ## What it does
 
+- Offers four **buyer profiles** as starting points — each re-weights the ranking, and some
+  remove cars from consideration entirely.
 - Ranks 12 fully modeled cars against ten criteria you weight yourself (0 removes a criterion).
 - Recomputes every cost figure in the browser from four sliders: kilometres per year,
   petrol price, electricity price, and the share of PHEV kilometres driven on battery.
-- Shows the six highest-scoring cars as photo cards with official model links and
+- Shows the highest-scoring cars as photo cards with official model links and
   Haifa-area showrooms.
 - Breaks each car's five-year cost into its components, with trims, warranty position,
   negotiation targets and the pros/cons from the underlying research.
+
+### Buyer profiles
+
+| Profile | What it does |
+|---|---|
+| Full research ranking | Every model, weighted as the original report argued. |
+| Cost-effective family car, no plug | Weights running cost and fuel economy highest and **excludes plug-in hybrids**. |
+| Biggest verified boot | Filters to a **published boot of 550 L or more**, then weights cargo heavily. |
+| Lowest cash outlay | Weights purchase price over five-year cost. |
+
+A profile owns two separate things: **which cars are in scope** (sticky — it is the category
+you chose) and a **starting weight mix** (freely adjustable). Moving a weight slider marks the
+profile as adjusted but never quietly puts an excluded car back into the list; Reset restores
+the profile's mix.
+
+Why "Biggest verified boot" filters rather than just weighting: almost every car here seats
+five, and the Camry, Santa Fe and CX-90 have no published Israeli boot figure, so they cannot
+be ranked on space honestly. A cargo floor treats *unknown* as failing the floor rather than
+pretending the value is good.
+
+#### On the Tucson
+
+Hyundai Israel sells the Tucson **only as a plug-in hybrid** — there is no non-plug-in Tucson
+to order. If you buy one and never charge it, its five-year cost rises from ₪185,086 to
+₪205,191 and it falls from 6th to 9th. Drag the charging-share slider to zero to see it.
 
 ## The cost model
 
@@ -69,8 +96,9 @@ images/                CC-licensed photographs + credits.json
 
 Everything is in `data/cars-israel.json`:
 
-- `meta.assumptions` — slider defaults.
+- `meta.assumptions` — slider defaults. `meta.defaultProfile` — profile selected on first visit.
 - `criteria` — the ten scored criteria. The **first six become the table columns**, in order.
+- `profiles` — buyer profiles: `{ id, label, tagline, note, weights, excludePowertrain[], minCargo? }`.
 - `cars` — the modeled cars. Required numeric fields: `msrp`, `registration`, `residual`,
   `fees5`, `insurance5`, `maint5`, `fuel.l100`.
 - `quoteOnly`, `dealers`, `images`, `sources`, `limitations`, `timeline`.
