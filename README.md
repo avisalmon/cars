@@ -23,7 +23,8 @@ Chinese brands are out of scope.
 
 | Profile | What it does |
 |---|---|
-| Price, fuel & comfort — every car | **Default.** All 12 cars, ranked on cash price, fuel use and the comfort proxy. |
+| Cash price & petrol only, space required | **Default.** Scores on purchase price plus five years of fuel, added together in shekels. Five-year total cost and resale are weighted to **zero**. Excludes plug-ins and requires a 550 L+ boot, so three cars remain. |
+| Price, fuel & comfort — every car | All 12 cars, ranked on cash price, fuel use and the comfort proxy. |
 | Full research ranking | Every model, weighted as the original report argued. |
 | Cost-effective family car, no plug | Weights running cost and fuel economy highest and **excludes plug-in hybrids**. |
 | Space is a requirement, no plug | No plug-ins **and** a published boot of 550 L or more. Leaves three cars. |
@@ -80,6 +81,21 @@ Two sliders in **Filters** cut the list to your real limits: **Max cash price** 
 use**. The fuel filter works on the *modeled* `fuel.l100`, which is the figure the cost model
 actually spends — not the official claim, which runs optimistic (the Elantra claims ~4.4 L/100km
 and measures ~5.43 locally).
+
+### Why "price + petrol" is one criterion, not two
+
+The **Price + petrol** column adds the cash price and five years of fuel together *before*
+scoring. This is not cosmetic. Scoring is min–max normalised per criterion across the visible
+cars, so each criterion's spread is stretched to the same 0–100 range regardless of how many
+shekels that spread is worth. On the three-car space shortlist the price spread is ₪60,710 but
+the fuel spread is only ₪7,284 — scoring them separately made a ₪7k fuel gap count as heavily
+as a ₪61k price gap, and ranked the car that was ₪38k more expensive on *both* measures above
+the one that was cheaper. Adding shekels to shekels first removes the distortion.
+
+The default profile therefore weights `cashPlusFuel` and leaves `acquisition`, `energy5`,
+`consumption`, `tco5` and `residual` at zero, so nothing is counted twice. Note what that
+deliberately hides: with resale weighted to zero, a car with weak residual value looks better
+than it will prove to be.
 
 #### On the Tucson
 

@@ -78,7 +78,7 @@
   const BODY_CLASS = { 'Sedan': 0.50, 'SUV': 0.75, '3-row SUV': 1.00 };
   const COMFORT_PARTS = { cargo: 0.30, seats: 0.30, power: 0.20, body: 0.20 };
   const COMFORT_MIN_PARTS = 3;
-  const TABLE_COLS = 7;
+  const TABLE_COLS = 8;
 
   function computeComfort(cars) {
     const span = (key) => {
@@ -124,6 +124,12 @@
       discount, residualValue, depreciation, energy5, tco5,
       comfortProxy: state.comfort ? state.comfort[car.id] : null,
       acquisition: paid + car.registration,
+      // Cash out of pocket plus five years of fuel, in one shekel figure.
+      // Scoring each separately distorts them: across a shortlist the cash
+      // spread is usually far wider than the fuel spread, so normalising both
+      // to 0-100 silently makes a small fuel gap count as much as a large
+      // price gap. Combining first keeps shekels comparable to shekels.
+      cashPlusFuel: energy5 == null ? null : paid + car.registration + energy5,
       costParts: [
         { label: 'Depreciation', value: depreciation },
         { label: 'Registration & fees', value: car.fees5 },
@@ -262,6 +268,7 @@
     switch (state.sort) {
       case 'tco5':        out.sort(byNumber('tco5', 'asc')); break;
       case 'acquisition': out.sort(byNumber('acquisition', 'asc')); break;
+      case 'cashPlusFuel': out.sort(byNumber('cashPlusFuel', 'asc')); break;
       case 'consumption': out.sort(byNumber('consumption', 'asc')); break;
       case 'cargo':       out.sort(byNumber('cargo', 'desc')); break;
       case 'name':        out.sort((a, b) => (a.make + a.model).localeCompare(b.make + b.model)); break;

@@ -29,7 +29,7 @@
         "Only then negotiate purchase price."
       ]
     },
-    "defaultProfile": "price-fuel-comfort"
+    "defaultProfile": "cash-and-fuel"
   },
   "criteria": [
     {
@@ -49,6 +49,15 @@
       "direction": "lower",
       "defaultWeight": 8,
       "hint": "MSRP plus first-registration fee — the cash needed to acquire the car."
+    },
+    {
+      "key": "cashPlusFuel",
+      "label": "Price + petrol",
+      "short": "Price+fuel",
+      "format": "currency",
+      "direction": "lower",
+      "defaultWeight": 0,
+      "hint": "Cash price plus five years of fuel, added together in shekels before scoring. Combining them first matters: across a shortlist the price spread is usually much wider than the fuel spread, so scoring the two separately would let a small fuel gap outweigh a large price gap."
     },
     {
       "key": "reliability",
@@ -1015,11 +1024,11 @@
     },
     "renault-symbioz-etech": {
       "src": "images/renault-symbioz-etech.jpg",
-      "credit": "Alexander Migl",
-      "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-      "source": "https://commons.wikimedia.org/wiki/File:Renault_Symbioz_Concept_(2017),_Paris_Motor_Show_2018,_IMG_0477.jpg",
-      "caption": "Renault Symbioz E-Tech"
+      "credit": "Charles from Port Chester, New York",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Renault_Symbioz_E-Tech_Full_Hybrid_145_(2024)_(54735982794).jpg",
+      "caption": "Renault Symbioz E-Tech Full Hybrid 145 (2024)"
     },
     "renault-arkana-etech": {
       "src": "images/renault-arkana-etech.jpg",
@@ -1210,6 +1219,30 @@
   "dealerNote": "Addresses were transcribed from each importer's own website. No Nissan Haifa-area address could be verified — Nissan's dealer locator renders entirely client-side from an API, so nothing is listed rather than guessed. No branch of any of these brands was found in the Krayot, Nesher, Tirat Carmel or Kiryat Tiv'on; the only Haifa-area presence is inside Haifa itself. Phone a branch before travelling — some locations are service only.",
   "profiles": [
     {
+      "id": "cash-and-fuel",
+      "label": "Cash price & petrol only, space required",
+      "tagline": "Ranked on purchase price and five-year fuel - depreciation ignored.",
+      "note": "This profile scores on the two numbers you said you care about: the cash you hand over on day one, and the petrol you burn over five years. Five-year total cost and resale value are weighted to zero here, so depreciation is simply not counted. Be aware of what that hides: the Renault Symbioz wins this ranking partly because it is the cheapest to buy, but it also carries the worst assumed resale of any car modeled (45%), so a cash-and-fuel view flatters it against the Toyotas. Space stays a hard filter, as you asked - only cars with a published boot of 550 L or more, and no plug-ins, which leaves three. Switch to “Space is a requirement, no plug” to see the same three ranked with five-year cost back in, or to “Price, fuel & comfort” to drop the boot floor and see all 12.",
+      "excludePowertrain": [
+        "Plug-in hybrid"
+      ],
+      "minCargo": 550,
+      "weights": {
+        "tco5": 0,
+        "acquisition": 0,
+        "cashPlusFuel": 10,
+        "reliability": 3,
+        "safety": 3,
+        "consumption": 0,
+        "cargo": 2,
+        "comfortProxy": 2,
+        "energy5": 0,
+        "residual": 0,
+        "seats": 1,
+        "power": 0
+      }
+    },
+    {
       "id": "price-fuel-comfort",
       "label": "Price, fuel & comfort — every car",
       "tagline": "All 12 cars, ranked on cash price, fuel use and the comfort proxy.",
@@ -1218,6 +1251,7 @@
       "weights": {
         "tco5": 6,
         "acquisition": 9,
+        "cashPlusFuel": 0,
         "reliability": 7,
         "safety": 7,
         "consumption": 9,
@@ -1238,15 +1272,16 @@
       "weights": {
         "tco5": 9,
         "acquisition": 8,
+        "cashPlusFuel": 0,
         "reliability": 9,
         "safety": 8,
         "consumption": 6,
         "cargo": 5,
+        "comfortProxy": 5,
         "energy5": 5,
         "residual": 5,
         "seats": 2,
-        "power": 2,
-        "comfortProxy": 5
+        "power": 2
       }
     },
     {
@@ -1260,15 +1295,16 @@
       "weights": {
         "tco5": 10,
         "acquisition": 8,
+        "cashPlusFuel": 0,
         "reliability": 7,
         "safety": 6,
         "consumption": 9,
         "cargo": 6,
+        "comfortProxy": 3,
         "energy5": 8,
         "residual": 4,
         "seats": 1,
-        "power": 1,
-        "comfortProxy": 3
+        "power": 1
       }
     },
     {
@@ -1283,15 +1319,16 @@
       "weights": {
         "tco5": 9,
         "acquisition": 7,
+        "cashPlusFuel": 0,
         "reliability": 8,
         "safety": 8,
         "consumption": 9,
         "cargo": 9,
+        "comfortProxy": 7,
         "energy5": 9,
         "residual": 4,
         "seats": 4,
-        "power": 2,
-        "comfortProxy": 7
+        "power": 2
       }
     },
     {
@@ -1303,15 +1340,16 @@
       "weights": {
         "tco5": 6,
         "acquisition": 5,
+        "cashPlusFuel": 0,
         "reliability": 7,
         "safety": 7,
         "consumption": 4,
         "cargo": 10,
+        "comfortProxy": 7,
         "energy5": 4,
         "residual": 3,
         "seats": 5,
-        "power": 3,
-        "comfortProxy": 7
+        "power": 3
       },
       "minCargo": 550
     },
@@ -1324,15 +1362,16 @@
       "weights": {
         "tco5": 5,
         "acquisition": 10,
+        "cashPlusFuel": 0,
         "reliability": 6,
         "safety": 7,
         "consumption": 6,
         "cargo": 4,
+        "comfortProxy": 3,
         "energy5": 5,
         "residual": 2,
         "seats": 2,
-        "power": 1,
-        "comfortProxy": 3
+        "power": 1
       }
     }
   ]
