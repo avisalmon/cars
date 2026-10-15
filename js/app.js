@@ -11,9 +11,9 @@
 
   const state = {
     meta: {}, criteria: [], cars: [], quoteOnly: [], dealers: {}, dealerNote: '', images: {},
-    sources: [], limitations: [], timeline: [], profiles: [],
+    sources: [], limitations: [], timeline: [], profiles: [], comfort: null,
     weights: {}, assumptions: {}, profile: null, weightsCustom: false,
-    filters: { search: '', budget: null, body: new Set(), powertrain: new Set(), make: new Set() },
+    filters: { search: '', budget: null, maxL100: null, body: new Set(), powertrain: new Set(), make: new Set() },
     sort: 'score'
   };
 
@@ -60,6 +60,56 @@
     return Array.isArray(d) && d.length === 2 ? (d[0] + d[1]) / 2 : 0;
   }
 
+  /* ------------------------------------------------------------------
+     Comfort proxy
+
+     The research contains no comfort rating, so nothing here is a comfort
+     score from a source. This is a transparent composite of four published
+     specs — boot litres, seats, power and body class — normalised across
+     the whole fleet once, so the number does not move when you filter.
+
+     It measures SIZE AND SPACE, not ride quality, seat shape or cabin
+     noise. Where the research states a comfort verdict that disagrees with
+     the number, that verdict is attached to the value as a note.
+     ------------------------------------------------------------------ */
+
+  // Body class is the one component that is a judgement rather than a
+  // published figure: a tier for how much cabin a class typically gives.
+  const BODY_CLASS = { 'Sedan': 0.50, 'SUV': 0.75, '3-row SUV': 1.00 };
+  const COMFORT_PARTS = { cargo: 0.30, seats: 0.30, power: 0.20, body: 0.20 };
+  const COMFORT_MIN_PARTS = 3;
+  const TABLE_COLS = 7;
+
+  function computeComfort(cars) {
+    const span = (key) => {
+      const v = cars.map((c) => c[key]).filter((x) => typeof x === 'number');
+      return v.length ? [Math.min(...v), Math.max(...v)] : null;
+    };
+    const spans = { cargo: span('cargo'), seats: span('seats'), power: span('power') };
+    const unit = (value, s) => {
+      if (typeof value !== 'number' || !s) return null;
+      const [lo, hi] = s;
+      return hi === lo ? 1 : (value - lo) / (hi - lo);
+    };
+
+    const out = {};
+    cars.forEach((car) => {
+      const parts = {
+        cargo: unit(car.cargo, spans.cargo),
+        seats: unit(car.seats, spans.seats),
+        power: unit(car.power, spans.power),
+        body: BODY_CLASS[car.body] != null ? BODY_CLASS[car.body] : null
+      };
+      const have = Object.keys(parts).filter((k) => parts[k] != null);
+      // Too little published data is reported as unknown, never as zero.
+      if (have.length < COMFORT_MIN_PARTS) { out[car.id] = null; return; }
+      // Re-weight over what exists so a missing spec does not read as bad.
+      const total = have.reduce((s, k) => s + COMFORT_PARTS[k], 0);
+      out[car.id] = Math.round(have.reduce((s, k) => s + parts[k] * COMFORT_PARTS[k], 0) / total * 100);
+    });
+    return out;
+  }
+
   // Resale is set by the market, not by your invoice, so a negotiated
   // discount reduces economic cost roughly shekel-for-shekel.
   function computeDerived(car, a) {
@@ -72,6 +122,7 @@
 
     return Object.assign({}, car, {
       discount, residualValue, depreciation, energy5, tco5,
+      comfortProxy: state.comfort ? state.comfort[car.id] : null,
       acquisition: paid + car.registration,
       costParts: [
         { label: 'Depreciation', value: depreciation },
@@ -136,6 +187,7 @@
       case 'score':    return value.toFixed(1);
       case 'l100':     return value.toFixed(1);
       case 'litres':   return Math.round(value).toLocaleString('en-US') + ' L';
+      case 'index':    return Math.round(value) + ' / 100';
       case 'hp':       return Math.round(value) + ' hp';
       default:         return String(value);
     }
@@ -167,7 +219,7 @@
   }
 
   function applyFilters(cars) {
-    const { search, budget, body, powertrain, make } = state.filters;
+    const { search, budget, maxL100, body, powertrain, make } = state.filters;
     const needle = search.trim().toLowerCase();
     const excluded = excludedPowertrains();
     const profile = activeProfile();
@@ -178,6 +230,8 @@
       // A null cargo figure fails a cargo floor: unknown is not the same as big enough.
       if (minCargo != null && !(typeof car.cargo === 'number' && car.cargo >= minCargo)) return false;
       if (budget != null && car.acquisition > budget) return false;
+      // Filter on the modeled figure, which is what the costs actually use.
+      if (maxL100 != null && car.fuel && typeof car.fuel.l100 === 'number' && car.fuel.l100 > maxL100) return false;
       if (body.size && !body.has(car.body)) return false;
       if (powertrain.size && !powertrain.has(car.powertrain)) return false;
       if (make.size && !make.has(car.make)) return false;
@@ -348,13 +402,13 @@
      ------------------------------------------------------------------ */
 
   function renderTableHead() {
-    const cols = state.criteria.slice(0, 6);
+    const cols = state.criteria.slice(0, TABLE_COLS);
     $('#cars-head').innerHTML = '<tr><th>Car</th><th>Match</th>' +
       cols.map((c) => `<th title="${esc(c.hint)}">${esc(c.short || c.label)}</th>`).join('') + '</tr>';
   }
 
   function renderTable(cars) {
-    const cols = state.criteria.slice(0, 6);
+    const cols = state.criteria.slice(0, TABLE_COLS);
     const body = $('#cars-body');
     body.innerHTML = '';
 
@@ -648,6 +702,17 @@
     $('#budget-value').textContent = money(hi);
   }
 
+  function syncFuelControl() {
+    const v = state.cars.map((c) => c.fuel && c.fuel.l100).filter((x) => typeof x === 'number');
+    const lo = Math.floor(Math.min(...v) * 10) / 10;
+    const hi = Math.ceil(Math.max(...v) * 10) / 10;
+    const el = $('#max-l100');
+    if (!el) return;
+    el.min = lo; el.max = hi; el.step = 0.1; el.value = hi;
+    state.filters.maxL100 = hi;
+    $('#max-l100-value').textContent = `${hi.toFixed(1)} L/100km`;
+  }
+
   function bindControls() {
     $('#search').addEventListener('input', (e) => { state.filters.search = e.target.value; render(); });
 
@@ -657,6 +722,16 @@
       $('#budget-value').textContent = money(state.filters.budget);
       render();
     });
+
+    syncFuelControl();
+    const fuelEl = $('#max-l100');
+    if (fuelEl) {
+      fuelEl.addEventListener('input', (e) => {
+        state.filters.maxL100 = Number(e.target.value);
+        $('#max-l100-value').textContent = `${state.filters.maxL100.toFixed(1)} L/100km`;
+        render();
+      });
+    }
 
     const refreshChips = () => {
       renderChips('#filter-body', uniques('body'), state.filters.body);
@@ -695,6 +770,7 @@
       state.filters.powertrain.clear();
       state.filters.make.clear();
       syncBudgetControl();
+      syncFuelControl();
       refreshChips();
       render();
     });
@@ -744,6 +820,10 @@
         timeline: data.timeline || [],
         profiles: data.profiles || []
       });
+
+      // Normalised across the whole fleet once, so the index is stable
+      // regardless of which cars the current filters happen to show.
+      state.comfort = computeComfort(state.cars);
 
       let savedProfile = null;
       try { savedProfile = localStorage.getItem(LS_PROFILE); } catch (_) {}

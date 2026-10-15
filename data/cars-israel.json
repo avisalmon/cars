@@ -29,7 +29,7 @@
         "Only then negotiate purchase price."
       ]
     },
-    "defaultProfile": "family-space-no-plug"
+    "defaultProfile": "price-fuel-comfort"
   },
   "criteria": [
     {
@@ -85,6 +85,15 @@
       "direction": "higher",
       "defaultWeight": 5,
       "hint": "Boot volume with all fitted seats in use. For three-row cars this is the all-rows-up figure — see the folded figure in the detail view."
+    },
+    {
+      "key": "comfortProxy",
+      "label": "Comfort proxy",
+      "short": "Comfort*",
+      "direction": "higher",
+      "defaultWeight": 5,
+      "hint": "A size-and-space proxy computed here, NOT a comfort rating from any source. It blends four published specs — boot litres (30%), seats (30%), power (20%) and body class (20%) — normalised across all 12 cars. It says nothing about ride quality, seat shape or cabin noise. Body class is the one judgement component. A car with fewer than three of the four specs published shows —.",
+      "format": "index"
     },
     {
       "key": "energy5",
@@ -173,7 +182,10 @@
       "bestFor": "A family of three to five wanting the least-regret, low-complexity purchase.",
       "notes": "Ranks first not by winning any single dimension — it doesn't — but by having almost no costly compromise. Watchpoints for the test drive: rear-seat width for three child seats, and whether the boot swallows your stroller plus holiday luggage.",
       "warranty": "Toyota Relax + dedicated hybrid-battery program verified; exact basic term unspecified in the retrieved source — get it in writing against the VIN.",
-      "link": "https://www.toyota.co.il/new-cars/corolla-cross"
+      "link": "https://www.toyota.co.il/new-cars/corolla-cross",
+      "fieldNotes": {
+        "comfortProxy": "Scores low, and the research agrees: “not the roomiest choice”, “less power and refinement than larger hybrids”, with road/cabin noise listed as a test-drive watchpoint."
+      }
     },
     {
       "id": "kia-sportage-hybrid",
@@ -532,7 +544,8 @@
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
       "link": "https://www.toyota.co.il/new-cars/camry",
       "fieldNotes": {
-        "cargo": "Exact Israeli boot capacity was not exposed in the retrieved official page, so it is left unspecified rather than approximated."
+        "cargo": "Exact Israeli boot capacity was not exposed in the retrieved official page, so it is left unspecified rather than approximated.",
+        "comfortProxy": "Treat this number with caution here. The proxy measures size, and the Camry has no published Israeli boot figure, so it scores low — yet the research calls it the “best sedan for comfort and efficiency” and praises its rear-seat comfort. This is exactly the gap between size and real comfort."
       }
     },
     {
@@ -633,7 +646,8 @@
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
       "link": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A7%D7%99%D7%94-%D7%A1%D7%95%D7%A8%D7%A0%D7%98%D7%95",
       "fieldNotes": {
-        "cargo": "179 L with all three rows in use, 813 L with the third row folded. Six seats in 2+2+2 — not a seven-seater."
+        "cargo": "179 L with all three rows in use, 813 L with the third row folded. Six seats in 2+2+2 — not a seven-seater.",
+        "comfortProxy": "Penalised by its boot component: the published 179 L is measured with all three rows occupied, while every five-seater is quoted with its seats up and nothing behind them. With the third row folded the Sorento carries 813 L. The number is consistent, not fair to this car."
       }
     },
     {
@@ -686,7 +700,8 @@
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
       "link": "https://www.hyundaimotors.co.il/models/santa-fe-hybrid",
       "fieldNotes": {
-        "cargo": "No Israeli boot figure appeared in the retrieved material — unspecified rather than inferred."
+        "cargo": "No Israeli boot figure appeared in the retrieved material — unspecified rather than inferred.",
+        "comfortProxy": "Highest here on seven seats and 3-row class, but its boot figure is unpublished, so the score rests on three of four components."
       }
     },
     {
@@ -738,7 +753,8 @@
       "warranty": "New-car term unspecified; genuine installed parts 12 months/unlimited km.",
       "link": "https://mazda.co.il/car-list",
       "fieldNotes": {
-        "cargo": "Exact Israeli VDA figure unspecified in the retrieved price material."
+        "cargo": "Exact Israeli VDA figure unspecified in the retrieved price material.",
+        "comfortProxy": "Neither boot volume nor local power output is published, leaving only two of four components — below the three-component minimum, so this is reported as unknown rather than guessed."
       }
     }
   ],
@@ -873,7 +889,8 @@
     "Warranty and scheduled-maintenance detail is inconsistently published. Obtain the exact 2026 warranty booklet and service schedule in writing before paying a non-refundable deposit.",
     "Future depreciation dominates TCO uncertainty. Fuel cost can be calculated; nobody knows what a 2026 hybrid sells for in 2031. Use these numbers to separate broad economic tiers, not to the last ₪1,000.",
     "Published MSRP is not the transaction price. Importers use campaigns, display-car offers, finance subsidies and trade-in boosts instead of openly cutting list prices.",
-    "Financing interest is excluded. Illustratively, ₪150,000 over 60 months at a hypothetical 7% nominal rate generates roughly ₪28,000 of interest — enough to erase any discount you negotiate."
+    "Financing interest is excluded. Illustratively, ₪150,000 over 60 months at a hypothetical 7% nominal rate generates roughly ₪28,000 of interest — enough to erase any discount you negotiate.",
+    "The comfort proxy is computed by this site, not taken from the research, which contains no comfort rating. It blends boot litres, seats, power and body class, so it measures size and space — not ride quality, seat comfort or cabin noise. The Camry is the clearest warning: it scores low on size while the research calls it the best sedan for comfort. Use it to sort, then test-drive."
   ],
   "timeline": [
     {
@@ -1193,6 +1210,26 @@
   "dealerNote": "Addresses were transcribed from each importer's own website. No Nissan Haifa-area address could be verified — Nissan's dealer locator renders entirely client-side from an API, so nothing is listed rather than guessed. No branch of any of these brands was found in the Krayot, Nesher, Tirat Carmel or Kiryat Tiv'on; the only Haifa-area presence is inside Haifa itself. Phone a branch before travelling — some locations are service only.",
   "profiles": [
     {
+      "id": "price-fuel-comfort",
+      "label": "Price, fuel & comfort — every car",
+      "tagline": "All 12 cars, ranked on cash price, fuel use and the comfort proxy.",
+      "note": "Nothing is excluded here — all 12 modeled cars compete, including plug-ins. Ranking leans on cash price, fuel consumption and the comfort proxy. Use the Max cash price and Max fuel use sliders in Filters to narrow it to your real limits. Read the Comfort column with its asterisk: it is computed by this site from boot litres, seats, power and body class, because the research has no comfort rating. It measures size and space, not ride quality or cabin noise — the Camry scores low on it while the research calls it the best sedan for comfort. Hover any value for its provenance.",
+      "excludePowertrain": [],
+      "weights": {
+        "tco5": 6,
+        "acquisition": 9,
+        "reliability": 7,
+        "safety": 7,
+        "consumption": 9,
+        "cargo": 5,
+        "comfortProxy": 9,
+        "energy5": 9,
+        "residual": 3,
+        "seats": 4,
+        "power": 2
+      }
+    },
+    {
       "id": "research",
       "label": "Full research ranking",
       "tagline": "Every model, weighted as the original report did.",
@@ -1208,7 +1245,8 @@
         "energy5": 5,
         "residual": 5,
         "seats": 2,
-        "power": 2
+        "power": 2,
+        "comfortProxy": 5
       }
     },
     {
@@ -1229,7 +1267,8 @@
         "energy5": 8,
         "residual": 4,
         "seats": 1,
-        "power": 1
+        "power": 1,
+        "comfortProxy": 3
       }
     },
     {
@@ -1251,7 +1290,8 @@
         "energy5": 9,
         "residual": 4,
         "seats": 4,
-        "power": 2
+        "power": 2,
+        "comfortProxy": 7
       }
     },
     {
@@ -1270,7 +1310,8 @@
         "energy5": 4,
         "residual": 3,
         "seats": 5,
-        "power": 3
+        "power": 3,
+        "comfortProxy": 7
       },
       "minCargo": 550
     },
@@ -1290,7 +1331,8 @@
         "energy5": 5,
         "residual": 2,
         "seats": 2,
-        "power": 1
+        "power": 1,
+        "comfortProxy": 3
       }
     }
   ]

@@ -23,9 +23,10 @@ Chinese brands are out of scope.
 
 | Profile | What it does |
 |---|---|
+| Price, fuel & comfort — every car | **Default.** All 12 cars, ranked on cash price, fuel use and the comfort proxy. |
 | Full research ranking | Every model, weighted as the original report argued. |
 | Cost-effective family car, no plug | Weights running cost and fuel economy highest and **excludes plug-in hybrids**. |
-| Space is a requirement, no plug | **Default.** No plug-ins **and** a published boot of 550 L or more. Leaves three cars. |
+| Space is a requirement, no plug | No plug-ins **and** a published boot of 550 L or more. Leaves three cars. |
 | Biggest verified boot | A **published boot of 550 L or more**, any powertrain. |
 | Lowest cash outlay | Weights purchase price over five-year cost. |
 
@@ -46,6 +47,39 @@ This matters: the Symbioz's 624 L exists only with its sliding rear bench pushed
 trades boot space against rear legroom and is not comparable with a fixed 580 L boot. The
 Sorento's 179 L is with all three rows up, 813 L with the third row folded. Three cars have no
 published figure at all and show `—`.
+
+### The comfort proxy — read this before trusting the column
+
+**The research contains no comfort rating, so this number is computed by the site, not taken
+from a source.** It is a weighted blend of four published specs, normalised across all 12 cars:
+
+| Component | Weight | Source |
+|---|---|---|
+| Boot litres | 30% | Published figure |
+| Seats | 30% | Published figure |
+| Power (hp) | 20% | Published figure |
+| Body class | 20% | **This site's judgement**: Sedan 0.50, SUV 0.75, 3-row SUV 1.00 |
+
+It measures **size and space — not ride quality, seat comfort or cabin noise.** Three safeguards
+are built in rather than hidden:
+
+- A car with fewer than three of the four specs published scores `—`, not zero. Only the CX-90
+  fails this (no boot volume, no local power figure).
+- Missing components are re-weighted over what exists, so a gap never reads as "bad".
+- The index normalises over the whole fleet once, so it does not move when you filter.
+
+The **Camry is the clearest warning**: it scores 32/100 because its Israeli boot figure was
+never published, while the research calls it the "best sedan for comfort and efficiency". The
+**Sorento** scores 48 because its published 179 L is measured with all three rows occupied,
+where every five-seater is quoted with nothing behind the seats — consistent, but not fair to
+that car. Both caveats appear as tooltips on the value. Sort with it, then test-drive.
+
+### Filtering by price and fuel
+
+Two sliders in **Filters** cut the list to your real limits: **Max cash price** and **Max fuel
+use**. The fuel filter works on the *modeled* `fuel.l100`, which is the figure the cost model
+actually spends — not the official claim, which runs optimistic (the Elantra claims ~4.4 L/100km
+and measures ~5.43 locally).
 
 #### On the Tucson
 
