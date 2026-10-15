@@ -29,7 +29,7 @@
         "Only then negotiate purchase price."
       ]
     },
-    "defaultProfile": "research"
+    "defaultProfile": "family-space-no-plug"
   },
   "criteria": [
     {
@@ -224,7 +224,10 @@
       "bestFor": "Parents with bulky strollers, sports equipment or teenagers who don't yet need a third row.",
       "notes": "Ranks second overall despite a slightly higher modeled cost, because space and equipment are real family benefits that the TCO number alone doesn't capture.",
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
-      "link": "https://kia-israel.co.il/catalog/mifrat-sportage-hybrid.pdf"
+      "link": "https://kia-israel.co.il/catalog/mifrat-sportage-hybrid.pdf",
+      "fieldNotes": {
+        "cargo": "Approximate figure. Kia also sells a longer-bodied Hybrid Long from ₪189,900 with more space."
+      }
     },
     {
       "id": "kia-niro-hybrid",
@@ -320,7 +323,10 @@
       "bestFor": "Families keeping the car many years and prioritising low ownership drama over low purchase price.",
       "notes": "The key economic question is trim discipline. For mostly paved Israeli driving, take the FWD car unless there is a concrete need for AWD. Check the exact VIN against Toyota's campaign database rather than assuming internet reports apply.",
       "warranty": "Toyota Relax + hybrid-battery program; confirm exact term by VIN/order.",
-      "link": "https://www.toyota.co.il/new-cars/rav4"
+      "link": "https://www.toyota.co.il/new-cars/rav4",
+      "fieldNotes": {
+        "cargo": "Approximately 580 L — the research gives this as an approximate figure, not an exact Israeli VDA spec."
+      }
     },
     {
       "id": "hyundai-tucson-phev",
@@ -453,7 +459,8 @@
       "safety": 6.5,
       "safetyBasis": "Euro NCAP 2024: adult 73%, child 80%, VRU 76%, safety assist 69%. Weak driver-chest protection noted in one frontal test",
       "estimates": [
-        "consumption"
+        "consumption",
+        "cargo"
       ],
       "drivetrain": "E-Tech full hybrid, 160 hp",
       "trims": "Current promotion from ₪159,990 — confirm whether this is already the special price.",
@@ -472,7 +479,10 @@
       "bestFor": "Value-focused buyers who will negotiate hard and accept residual-value risk.",
       "notes": "The Green NCAP spread (4.2 warm vs 6.8 highway) is the single best warning in this research against treating one WLTP number as the cost of every journey. If Israeli buyers take to the model, the modeled depreciation may prove too pessimistic.",
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
-      "link": "https://www.renault.co.il/cars/symbioz/overview.html"
+      "link": "https://www.renault.co.il/cars/symbioz/overview.html",
+      "fieldNotes": {
+        "cargo": "Up to ~624 L, but only with the sliding rear bench pushed forward — the research cites “up to ~624 L depending bench position”, with 1,582 L seats folded. Boot space and rear legroom trade against each other here, so this is not directly comparable with a fixed boot."
+      }
     },
     {
       "id": "toyota-camry-hybrid",
@@ -520,7 +530,10 @@
       "bestFor": "Families who do highway distance and don't want an SUV.",
       "notes": "Cargo volume is left blank rather than approximated — an invented 'official' figure is worse purchasing information than an explicit gap.",
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
-      "link": "https://www.toyota.co.il/new-cars/camry"
+      "link": "https://www.toyota.co.il/new-cars/camry",
+      "fieldNotes": {
+        "cargo": "Exact Israeli boot capacity was not exposed in the retrieved official page, so it is left unspecified rather than approximated."
+      }
     },
     {
       "id": "renault-arkana-etech",
@@ -618,7 +631,10 @@
       "bestFor": "Families who need a genuine third row and prefer separated second-row seats.",
       "notes": "The captain-chair layout is either a major advantage or a deal-breaker. For a family with three children who often carry grandparents, that distinction matters more than horsepower. Cargo here is the all-rows-up figure; 813 L is available with row three folded.",
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
-      "link": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A7%D7%99%D7%94-%D7%A1%D7%95%D7%A8%D7%A0%D7%98%D7%95"
+      "link": "https://kia-israel.co.il/%D7%A8%D7%9B%D7%91/%D7%A7%D7%99%D7%94-%D7%A1%D7%95%D7%A8%D7%A0%D7%98%D7%95",
+      "fieldNotes": {
+        "cargo": "179 L with all three rows in use, 813 L with the third row folded. Six seats in 2+2+2 — not a seven-seater."
+      }
     },
     {
       "id": "hyundai-santa-fe-hybrid",
@@ -668,7 +684,10 @@
       "bestFor": "Larger families who regularly use more than five seats.",
       "notes": "Not a rational 'upgrade' simply because the budget permits it. It makes sense where the extra row is genuinely used, adults actually occupy the rear seats, or the flexibility avoids a second vehicle. Confirm the local seat configuration when ordering.",
       "warranty": "Exact 2026 term unspecified in the retrieved source.",
-      "link": "https://www.hyundaimotors.co.il/models/santa-fe-hybrid"
+      "link": "https://www.hyundaimotors.co.il/models/santa-fe-hybrid",
+      "fieldNotes": {
+        "cargo": "No Israeli boot figure appeared in the retrieved material — unspecified rather than inferred."
+      }
     },
     {
       "id": "mazda-cx-90-mhev",
@@ -717,7 +736,10 @@
       "bestFor": "Buyers who want large-family capacity with a premium driving character and will absorb the fuel bill.",
       "notes": "Do not compare this with a Corolla Cross or Niro as if all 'hybrid' badges imply the same electrification. Mazda's Israeli parts material states a 12-month unlimited-km warranty on qualifying genuine installed parts; confirm the new-vehicle terms on the purchase contract.",
       "warranty": "New-car term unspecified; genuine installed parts 12 months/unlimited km.",
-      "link": "https://mazda.co.il/car-list"
+      "link": "https://mazda.co.il/car-list",
+      "fieldNotes": {
+        "cargo": "Exact Israeli VDA figure unspecified in the retrieved price material."
+      }
     }
   ],
   "quoteOnly": [
@@ -1208,6 +1230,28 @@
         "residual": 4,
         "seats": 1,
         "power": 1
+      }
+    },
+    {
+      "id": "family-space-no-plug",
+      "label": "Space is a requirement, no plug",
+      "tagline": "Big boot and a roomy cabin treated as a must — plug-in hybrids excluded.",
+      "note": "Here space is a filter, not a preference: only cars with a published boot of 550 L or more, and no plug-ins. That removes the Corolla Cross — the overall cost winner — because at 436 L the research calls it “visibly less generous than a Sportage or RAV4” and “not the roomiest choice”. Three cars remain. Read the boot figures with their footnotes: the Symbioz's 624 L only exists with its sliding bench pushed forward, which costs rear legroom, so it does not give boot and cabin space at the same time. The research's own one-line answer to this exact requirement is the Sportage: “the better choice for a family that values cabin and luggage space over maximum fuel economy.” Note the trade-off it names — the Sportage is also the thirstiest of the three.",
+      "excludePowertrain": [
+        "Plug-in hybrid"
+      ],
+      "minCargo": 550,
+      "weights": {
+        "tco5": 9,
+        "acquisition": 7,
+        "reliability": 8,
+        "safety": 8,
+        "consumption": 9,
+        "cargo": 9,
+        "energy5": 9,
+        "residual": 4,
+        "seats": 4,
+        "power": 2
       }
     },
     {

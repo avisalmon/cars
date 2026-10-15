@@ -142,15 +142,18 @@
   }
 
   const isEstimated = (car, key) => Array.isArray(car.estimates) && car.estimates.includes(key);
+  const fieldNote = (car, key) => (car.fieldNotes && car.fieldNotes[key]) || null;
 
   function cellValue(car, criterion) {
     const text = fmt(car[criterion.key], criterion);
+    const note = fieldNote(car, criterion.key);
     if (text === '—') {
-      return '<span class="est" title="Not published in the retrieved source — left blank rather than invented">—</span>';
+      return `<span class="est" title="${esc(note || 'Not published in the retrieved source — left blank rather than invented')}">—</span>`;
     }
     if (isEstimated(car, criterion.key)) {
-      return `<span class="est" title="Estimated — not published as an official figure">${text}</span>`;
+      return `<span class="est" title="${esc(note || 'Estimated — not published as an official figure')}">${text}</span>`;
     }
+    if (note) return `<span class="est" title="${esc(note)}">${text}</span>`;
     return text;
   }
 

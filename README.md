@@ -25,7 +25,8 @@ Chinese brands are out of scope.
 |---|---|
 | Full research ranking | Every model, weighted as the original report argued. |
 | Cost-effective family car, no plug | Weights running cost and fuel economy highest and **excludes plug-in hybrids**. |
-| Biggest verified boot | Filters to a **published boot of 550 L or more**, then weights cargo heavily. |
+| Space is a requirement, no plug | **Default.** No plug-ins **and** a published boot of 550 L or more. Leaves three cars. |
+| Biggest verified boot | A **published boot of 550 L or more**, any powertrain. |
 | Lowest cash outlay | Weights purchase price over five-year cost. |
 
 A profile owns two separate things: **which cars are in scope** (sticky — it is the category
@@ -33,10 +34,18 @@ you chose) and a **starting weight mix** (freely adjustable). Moving a weight sl
 profile as adjusted but never quietly puts an excluded car back into the list; Reset restores
 the profile's mix.
 
-Why "Biggest verified boot" filters rather than just weighting: almost every car here seats
+Why the space profiles filter rather than just weighting cargo: almost every car here seats
 five, and the Camry, Santa Fe and CX-90 have no published Israeli boot figure, so they cannot
 be ranked on space honestly. A cargo floor treats *unknown* as failing the floor rather than
-pretending the value is good.
+pretending the value is good. Weighting alone ranked the **smallest**-boot car first.
+
+#### Boot figures are not all the same kind of number
+
+`fieldNotes.cargo` carries the provenance of each boot figure, shown as a tooltip on the value.
+This matters: the Symbioz's 624 L exists only with its sliding rear bench pushed forward, so it
+trades boot space against rear legroom and is not comparable with a fixed 580 L boot. The
+Sorento's 179 L is with all three rows up, 813 L with the third row folded. Three cars have no
+published figure at all and show `—`.
 
 #### On the Tucson
 
@@ -101,6 +110,8 @@ Everything is in `data/cars-israel.json`:
 - `profiles` — buyer profiles: `{ id, label, tagline, note, weights, excludePowertrain[], minCargo? }`.
 - `cars` — the modeled cars. Required numeric fields: `msrp`, `registration`, `residual`,
   `fees5`, `insurance5`, `maint5`, `fuel.l100`.
+- `cars[].fieldNotes` — optional `{ fieldKey: "why this number is what it is" }`, surfaced as a
+  tooltip on that value. Use it whenever a figure is conditional, approximate or missing.
 - `quoteOnly`, `dealers`, `images`, `sources`, `limitations`, `timeline`.
 
 `dealers` is keyed by make:
